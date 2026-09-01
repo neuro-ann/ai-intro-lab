@@ -1,0 +1,3137 @@
+<title>인공지능입문 실습판</title>
+
+<!-- =====================================================================
+     여기만 고치시면 됩니다 — 공지와 자료 목록
+     · 따옴표(" ")와 쉼표(,)는 그대로 두고 글자만 바꾸세요.
+     · 줄을 늘리려면 { ... } 한 덩어리를 통째로 복사해 아래에 붙이세요.
+     · link 를 비워 두면("") 링크 없이 글만 보입니다.
+     ===================================================================== -->
+<script>
+window.COURSE = {
+
+  notices: [
+
+    { date:"1주차", title:"실습 앱을 어떻게 쓰나요",
+      body:"왼쪽 목차에서 주차를 고르면 됩니다. 한 주차는 네 단계입니다. 먼저 예측하고, 직접 해 보고, 무엇이 보였는지 정리하고, 확인 문제를 풉니다. 순서대로만 하면 됩니다. 진행 기록은 각자 기기에만 저장되고 성적과는 관계가 없습니다.",
+      link:"" },
+
+    { date:"1주차", title:"매주 노트북이나 패드를 가져오세요",
+      body:"실습은 수업 시간 안에서 끝냅니다. 설치하거나 결제할 것은 없습니다. 사용하는 서비스는 로그인만 확인합니다.",
+      link:"" },
+
+    { date:"1주차", title:"실습 자료에 개인정보를 올리지 마세요",
+      body:"신분증, 계좌번호, 주민등록번호처럼 나를 알아볼 수 있는 정보는 올리지 않습니다. 아직 공개되지 않은 자료도 올리지 않습니다. 필요한 자료는 수업에서 드립니다.",
+      link:"" },
+
+    { date:"3주차 · 5주차", title:"사진을 쓰는 실습이 있습니다",
+      body:"3주차와 5주차에는 사진을 올려서 실습합니다. 폰이나 노트북에 있는 사진이면 됩니다. 올린 사진은 서버로 보내지 않습니다. 브라우저 안에서만 처리되고, 창을 닫으면 사라집니다.",
+      link:"" },
+
+    { date:"6주차", title:"중간고사 안내",
+      body:"중간고사는 8주차에 봅니다. 범위는 1주차부터 6주차까지입니다. 도구를 어떻게 누르는지는 나오지 않습니다. 개념과 판단, 확인하는 방법을 묻습니다.",
+      link:"" },
+
+    { date:"9주차", title:"후반부는 AI를 실제로 쓰는 방법입니다",
+      body:"9주차부터 14주차까지는 명세 · 맥락 · 위임 · 도구 연계 · 검증 · 성찰 순서로 배웁니다. 기말고사 범위는 9주차부터 14주차까지입니다.",
+      link:"" }
+
+  ],
+
+  materials: [
+
+    { group:"수업 안내",
+      items:[
+        { title:"강의계획서", link:"", note:"e-캠퍼스" },
+        { title:"e-캠퍼스 바로가기", link:"" }
+      ] },
+
+    { group:"강의노트 — 이 수업의 교재입니다",
+      items:[
+        { title:"1~6주 강의노트 · 기초와 원리", link:"", note:"주차별 업로드" },
+        { title:"9~14주 강의노트 · 활용과 성찰", link:"", note:"주차별 업로드" }
+      ] },
+
+    { group:"시험",
+      items:[
+        { title:"중간고사 — 1주차부터 6주차까지", link:"", note:"8주차 필기" },
+        { title:"기말고사 — 9주차부터 14주차까지", link:"", note:"16주차 필기" }
+      ] },
+
+    { group:"참고 도서 — 사지 않아도 됩니다",
+      items:[
+        { title:"김대수, 처음 만나는 인공지능 (개정3판), 생능출판", link:"", note:"선택" },
+        { title:"박동규, 누구나 쉽게 배우는 인공지능 스타트, 인피니티북스", link:"", note:"선택" }
+      ] }
+
+  ]
+
+};
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{
+	--bg:#f1f1f4; --surface:#ffffff; --surface-2:#e9e9ee; --surface-3:#dfdfe6;
+	--ink:#101015; --ink-2:#43434e; --ink-3:#71717f; --line:#dcdce4;
+	--acc:#16323a; --acc-soft:#e2e8ea; --acc-ink:#16323a;
+	--sig:#c0436a; --sig-soft:#f7e2e9; --sig-ink:#a8355b;
+	--ok:#1c7a72; --ok-soft:#dbeeec; --ok-ink:#166761;
+	--warn:#8d6008; --warn-soft:#f6ead0;
+	--sans:"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+	--serif:"Gowun Batang","Nanum Myeongjo",Georgia,serif;
+	--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+	--r:10px; --r-lg:20px; --r-xl:24px;
+	--e1:0 1px 2px rgba(16,16,24,.05);
+	--e2:0 1px 2px rgba(16,16,24,.05),0 12px 28px -18px rgba(16,16,24,.3);
+	--e3:0 2px 8px rgba(16,16,24,.07),0 30px 60px -30px rgba(16,16,24,.4);
+}
+@media (prefers-color-scheme:dark){
+	:root:not([data-theme="light"]){
+		--bg:#0b0b0e; --surface:#15151b; --surface-2:#1e1e26; --surface-3:#282832;
+		--ink:#eeeef4; --ink-2:#b2b2c0; --ink-3:#7c7c8c; --line:#282831;
+		--acc:#e6edef; --acc-soft:#1e2a2e; --acc-ink:#cfe0e2;
+		--sig:#ef8fa8; --sig-soft:#2c1720; --sig-ink:#f4a9bc;
+		--ok:#55bdb4; --ok-soft:#12262a; --ok-ink:#74d0c6;
+		--warn:#dda94a; --warn-soft:#2a2213;
+		--e1:0 1px 2px rgba(0,0,0,.5);
+		--e2:0 1px 2px rgba(0,0,0,.5),0 14px 30px -20px rgba(0,0,0,.85);
+		--e3:0 2px 8px rgba(0,0,0,.55),0 34px 64px -32px rgba(0,0,0,.9);
+	}
+}
+:root[data-theme="dark"]{
+	--bg:#0b0b0e; --surface:#15151b; --surface-2:#1e1e26; --surface-3:#282832;
+	--ink:#eeeef4; --ink-2:#b2b2c0; --ink-3:#7c7c8c; --line:#282831;
+	--acc:#e6edef; --acc-soft:#1e2a2e; --acc-ink:#cfe0e2;
+	--sig:#ef8fa8; --sig-soft:#2c1720; --sig-ink:#f4a9bc;
+	--ok:#55bdb4; --ok-soft:#12262a; --ok-ink:#74d0c6;
+	--warn:#dda94a; --warn-soft:#2a2213;
+	--e1:0 1px 2px rgba(0,0,0,.5);
+	--e2:0 1px 2px rgba(0,0,0,.5),0 14px 30px -20px rgba(0,0,0,.85);
+	--e3:0 2px 8px rgba(0,0,0,.55),0 34px 64px -32px rgba(0,0,0,.9);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.62;letter-spacing:-.02em;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;letter-spacing:-.02em}
+:focus-visible{outline:2px solid var(--sig);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- app shell ---------- */
+.app{display:flex;min-height:100vh}
+.side{position:fixed;top:0;left:0;bottom:0;width:268px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40;transition:transform .3s cubic-bezier(.32,.72,.16,1)}
+.side-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:22px 20px 14px}
+.side-title{font-family:var(--serif);font-size:21px;font-weight:700;line-height:1.14;letter-spacing:-.03em;margin-top:7px}
+.side-x{display:none;border:none;background:none;color:var(--ink-3);font-size:17px;cursor:pointer;padding:2px 4px}
+.side-search{padding:0 16px 10px}
+.side-search .txtin{font-size:13px;padding:9px 12px;border-radius:8px}
+.side-nav{flex:1;overflow-y:auto;padding:2px 12px 14px}
+.nav-sec{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;padding:18px 8px 7px;font-weight:600}
+.nav-i{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:none;background:none;color:var(--ink-2);font-family:var(--sans);font-size:13.5px;padding:9px 10px;border-radius:8px;cursor:pointer;letter-spacing:-.02em;line-height:1.34}
+.nav-i:hover{background:var(--surface-2);color:var(--ink)}
+.nav-i.on{background:var(--sig-soft);color:var(--sig-ink);font-weight:700}
+.nav-i .nn{font-family:var(--mono);font-size:11px;color:var(--ink-3);min-width:17px;font-variant-numeric:tabular-nums;flex:none}
+.nav-i.on .nn{color:var(--sig-ink)}
+.nav-i.done .nn{color:var(--ok)}
+.nav-i.dim{opacity:.4;cursor:default}
+.nav-i.dim:hover{background:none;color:var(--ink-2)}
+.nav-i .badge{margin-left:auto;font-family:var(--mono);font-size:9.5px;background:var(--sig);color:#fff;border-radius:99px;padding:2px 7px;flex:none}
+.side-foot{border-top:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.side-prog{flex:1;min-width:0}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:35}
+.main{flex:1;margin-left:268px;min-width:0}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:13px 24px;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid var(--line)}
+.burger{display:none;border:1px solid var(--line);background:transparent;color:var(--ink);font-size:14px;border-radius:8px;width:36px;height:36px;cursor:pointer}
+.crumb{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase}
+.topspacer{flex:1}
+.view{max-width:760px;margin:0 auto;padding:34px 24px 96px}
+.home{padding:0}
+.empty{padding:26px 0;color:var(--ink-3);font-size:14.5px}
+.ncard{border:1px solid var(--line);border-radius:var(--r-xl);padding:20px 22px;background:var(--surface);margin-bottom:12px}
+.ncard .nd{font-family:var(--mono);font-size:11px;color:var(--sig-ink);letter-spacing:.08em;font-weight:600}
+.ncard h4{font-family:var(--serif);font-size:19px;font-weight:700;margin:7px 0 8px;letter-spacing:-.03em}
+.ncard p{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.66}
+.ncard a{display:inline-block;margin-top:12px;font-size:13.5px;font-weight:700;color:var(--sig-ink);text-decoration:none;border-bottom:1px solid var(--sig)}
+.mgroup{margin-bottom:26px}
+.mgroup h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase;margin:0 0 10px;font-weight:600}
+.mitem{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:var(--r-lg);padding:15px 18px;background:var(--surface);margin-bottom:9px;text-decoration:none;color:var(--ink);font-size:15px;font-weight:500;transition:border-color .15s,transform .16s}
+.mitem:hover{border-color:var(--sig);transform:translateX(3px)}
+.mitem .arw{margin-left:auto;color:var(--ink-3);font-family:var(--mono);font-size:13px}
+.mitem.nolink{opacity:.7;pointer-events:none}
+@media (max-width:900px){
+	.side{transform:translateX(-100%);box-shadow:var(--e3)}
+	.app.nav-open .side{transform:none}
+	.app.nav-open .scrim{display:block}
+	.side-x{display:block}
+	.main{margin-left:0}
+	.burger{display:block}
+	.view{padding:26px 20px 90px}
+}
+@media (prefers-reduced-motion:reduce){.side{transition:none}}
+
+/* ---------- hero ---------- */
+.mast{padding:26px 0 34px;border-bottom:1px solid var(--line)}
+.mast-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:44px}
+.code{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;color:var(--ink-3);font-weight:600;text-transform:uppercase}
+.theme-btn{flex:none;border:1px solid var(--line);background:transparent;color:var(--ink-2);font-family:var(--mono);font-size:11px;letter-spacing:.1em;border-radius:99px;padding:7px 15px;cursor:pointer;text-transform:uppercase}
+.theme-btn:hover{border-color:var(--sig);color:var(--sig-ink)}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(42px,9vw,74px);line-height:.98;margin:0 0 .28em;letter-spacing:-.035em;text-wrap:balance}
+.tagline{margin:0;color:var(--ink-2);font-size:16px;max-width:44ch;line-height:1.68}
+.mast-meta{margin-top:26px;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase}
+
+/* ---------- progress ---------- */
+.summary{display:grid;grid-template-columns:1fr auto auto;gap:18px 20px;align-items:center;margin:26px 0 0;padding:22px 0 24px;border-bottom:1px solid var(--line)}
+@media (max-width:600px){.summary{grid-template-columns:1fr auto}.summary .go{grid-column:1/-1}}
+.summary .lab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--sig-ink);font-weight:600;text-transform:uppercase}
+.summary .nextline{font-family:var(--serif);font-size:23px;font-weight:700;margin-top:5px;letter-spacing:-.02em;text-wrap:balance}
+.sum-num{font-family:var(--mono);font-size:40px;font-weight:600;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.sum-num i{font-style:normal;font-size:17px;color:var(--ink-3);letter-spacing:-.02em}
+.summary .go{border:none;background:var(--acc);color:var(--bg);font-size:14.5px;font-weight:700;border-radius:var(--r);padding:13px 26px;cursor:pointer;white-space:nowrap;transition:transform .16s,opacity .16s}
+.summary .go:hover{transform:translateY(-1px);opacity:.88}
+.pbar{grid-column:1/-1;display:flex;align-items:center;gap:14px}
+.ptrack{flex:1;height:3px;background:var(--surface-3);border-radius:99px;overflow:hidden}
+.pfill{height:100%;width:0;background:var(--sig);border-radius:99px;transition:width .55s cubic-bezier(.32,.72,.16,1)}
+.ptxt{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;white-space:nowrap;letter-spacing:.02em}
+
+/* ---------- week list ---------- */
+.blockhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:44px 0 14px}
+.blockhead h2{font-family:var(--serif);font-size:21px;font-weight:700;margin:0;letter-spacing:-.025em}
+.blockhead .rng{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase}
+.weeks{display:grid;gap:10px}
+.wk{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:18px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:18px 22px;cursor:pointer;font-family:var(--sans);color:var(--ink);transition:border-color .16s,transform .18s cubic-bezier(.32,.72,.16,1),background .16s}
+.wk:hover{border-color:var(--sig);transform:translateY(-2px)}
+.wk .no{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--ink-3);letter-spacing:-.04em;font-variant-numeric:tabular-nums;transition:color .16s}
+.wk:hover .no{color:var(--sig)}
+.wk.done .no{color:var(--ok)}
+.wk .t{font-size:16.5px;font-weight:700;display:block;letter-spacing:-.025em}
+.wk .s{font-size:13px;color:var(--ink-3);display:block;margin-top:2px;letter-spacing:-.015em}
+.wk .st{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);white-space:nowrap;letter-spacing:.1em;text-transform:uppercase}
+.wk.done .st{color:var(--ok-ink);font-weight:600}
+.wk.now{border-color:var(--sig);background:var(--surface)}
+.wk.now .no{color:var(--sig)}
+.wk.now .st{color:var(--sig-ink);font-weight:600}
+.wk.exam{cursor:default;background:transparent;border-style:dashed;opacity:.62}
+.wk.exam:hover{border-color:var(--line);transform:none}
+.homefoot{margin-top:46px;padding-top:20px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-3)}
+.linkbtn{border:1px solid var(--line);background:transparent;color:var(--ink-2);font-size:12px;border-radius:99px;padding:8px 15px;cursor:pointer}
+.linkbtn:hover{border-color:var(--sig);color:var(--sig-ink)}
+
+/* ---------- lesson ---------- */
+.lbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid var(--line)}
+.lbar-in{max-width:740px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.back{border:none;background:none;color:var(--ink);font-size:14.5px;font-weight:700;cursor:pointer;padding:0;letter-spacing:-.02em}
+.back:hover{color:var(--sig-ink)}
+.lbar .wknum{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.12em}
+.lbody{max-width:740px;margin:0 auto;padding:30px 22px 80px}
+.lhead .wkbig{font-family:var(--mono);font-size:clamp(56px,15vw,88px);font-weight:400;line-height:.85;letter-spacing:-.06em;color:var(--sig);opacity:.28;margin-bottom:6px}
+.lhead .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--sig-ink);font-weight:600;text-transform:uppercase}
+.lhead h2{font-family:var(--serif);font-size:clamp(28px,6vw,42px);font-weight:700;margin:.16em 0 .2em;line-height:1.06;letter-spacing:-.035em;text-wrap:balance}
+.lhead p{margin:0;color:var(--ink-2);font-size:15.5px}
+.goal{margin:22px 0 0;padding:18px 20px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--sig);font-size:15px}
+.goal b{color:var(--sig-ink)}
+
+.block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);margin-top:18px;overflow:hidden}
+.block-in{padding:22px}
+.bh{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.bh .tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;font-weight:600;padding:4px 9px;border-radius:6px;background:var(--surface-2);color:var(--ink-3);text-transform:uppercase}
+.bh .tag.p{background:var(--acc-soft);color:var(--acc-ink)}
+.bh .tag.o{background:var(--sig-soft);color:var(--sig-ink)}
+.bh .tag.c{background:var(--ok-soft);color:var(--ok-ink)}
+.bh h3{font-size:17px;font-weight:700;margin:0;letter-spacing:-.03em}
+.lead{color:var(--ink-2);font-size:15px;margin:0 0 16px;line-height:1.66}
+.lead b{color:var(--ink)}
+
+.q{font-size:16.5px;font-weight:700;margin:0 0 13px;line-height:1.5;letter-spacing:-.025em}
+.opts{display:grid;gap:9px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:15px;border-radius:var(--r);padding:13px 16px;cursor:pointer;transition:border-color .14s,background .14s,transform .16s}
+.opt:hover:not(:disabled){border-color:var(--sig);transform:translateX(3px)}
+.opt:disabled{cursor:default}
+.opt.pick-ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ok-ink);font-weight:700}
+.opt.pick-no{border-color:var(--sig);background:var(--sig-soft);color:var(--sig-ink)}
+.fb{display:none;margin-top:14px;font-size:14.5px;line-height:1.66;padding:15px 17px;border-radius:var(--r-lg)}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-soft)}.fb.ok b{color:var(--ok-ink)}
+.fb.no{background:var(--warn-soft)}.fb.no b{color:var(--warn)}
+
+.list{list-style:none;margin:0;padding:0}
+.li{display:flex;gap:13px;padding:12px 0;align-items:flex-start}
+.li+.li{border-top:1px solid var(--line)}
+.li .dot{flex:none;width:5px;height:5px;border-radius:50%;background:var(--sig);margin-top:10px}
+.li p{margin:0;font-size:15px;color:var(--ink-2);line-height:1.62}
+.li p b{color:var(--ink)}
+.keyline{margin-top:15px;padding:16px 18px;border-radius:var(--r-lg);background:var(--sig-soft);font-size:15px;line-height:1.66}
+.keyline b{color:var(--sig-ink)}
+.term{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:5px;background:var(--surface-2);color:var(--ink-2);letter-spacing:.02em}
+
+/* controls */
+.btn{border:none;background:var(--acc);color:var(--bg);font-size:14.5px;font-weight:700;border-radius:var(--r);padding:12px 20px;cursor:pointer;transition:transform .16s,opacity .14s;letter-spacing:-.02em}
+.btn:hover{transform:translateY(-1px);opacity:.88}
+.btn:active{transform:none}
+.btn.tint{background:var(--acc-soft);color:var(--acc-ink)}
+.btn.gray{background:var(--surface-2);color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.ctl{display:grid;grid-template-columns:minmax(74px,auto) 1fr 54px;align-items:center;gap:14px;padding:11px 0}
+.ctl+.ctl{border-top:1px solid var(--line)}
+.ctl label{font-size:14px;font-weight:500;color:var(--ink-2)}
+.ctl output{font-family:var(--mono);font-size:13.5px;text-align:right;color:var(--sig-ink);font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:99px;background:var(--surface-3);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--sig);border:none;cursor:pointer;transition:transform .14s}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--sig);border:none;cursor:pointer}
+.metrics{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.metric{flex:1;min-width:112px;background:var(--surface-2);border-radius:var(--r-lg);padding:13px 16px}
+.metric .k{font-size:11px;color:var(--ink-3);font-weight:600;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.metric .v{font-family:var(--mono);font-size:24px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.metric.win{background:var(--ok-soft)}.metric.win .v{color:var(--ok-ink)}
+.metric.bad{background:var(--sig-soft)}.metric.bad .v{color:var(--sig-ink)}
+canvas{width:100%;height:auto;display:block;border-radius:var(--r-lg);touch-action:none}
+.txtin{width:100%;font-family:var(--sans);font-size:15px;padding:12px 15px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);color:var(--ink);letter-spacing:-.02em}
+.txtin:focus{outline:none;border-color:var(--sig)}
+.note{font-size:13px;color:var(--ink-3);margin-top:11px;line-height:1.62}
+
+/* chips & cards */
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink-2);font-size:13.5px;font-weight:500;border-radius:99px;padding:9px 16px;cursor:pointer;transition:border-color .14s,background .14s,color .14s;letter-spacing:-.02em}
+.chip:hover{border-color:var(--sig)}
+.chip[aria-pressed="true"]{border-color:var(--sig);background:var(--sig-soft);color:var(--sig-ink);font-weight:700}
+.taskcard{border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px;background:var(--surface);margin-bottom:10px}
+.taskcard .tt{font-size:15px;font-weight:700;margin-bottom:11px;letter-spacing:-.025em;line-height:1.5}
+.taskcard .picks{display:flex;gap:8px;flex-wrap:wrap}
+.pick{border:1px solid var(--line);background:transparent;color:var(--ink-2);font-size:13px;font-weight:600;border-radius:8px;padding:8px 14px;cursor:pointer;transition:border-color .14s,background .14s}
+.pick:hover{border-color:var(--sig)}
+.pick.sel{border-color:var(--sig);background:var(--sig-soft);color:var(--sig-ink)}
+.pick.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok-ink)}
+.pick.wrong{border-color:var(--sig);background:var(--sig-soft);color:var(--sig-ink)}
+.taskcard .why{font-size:13.5px;color:var(--ink-2);margin-top:11px;display:none;line-height:1.62}
+.taskcard .why.show{display:block}
+
+/* bars */
+.bars{display:grid;gap:10px;margin-top:8px}
+.bar{display:grid;grid-template-columns:minmax(76px,92px) 1fr 48px;align-items:center;gap:12px}
+.bar .bw{font-size:14px;font-weight:600;letter-spacing:-.02em}
+.bar .tr{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar .fi{height:100%;background:var(--ok);border-radius:99px;transition:width .4s cubic-bezier(.32,.72,.16,1)}
+.bar .pc{font-family:var(--mono);font-size:12px;text-align:right;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.bar.hit .bw{color:var(--sig-ink);font-weight:700}.bar.hit .fi{background:var(--sig)}
+
+/* pixel grids */
+.gridwrap{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.gcol{display:flex;flex-direction:column;gap:9px;align-items:center}
+.gcol .cap{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase}
+.pix{display:grid;gap:2px;background:var(--surface-2);border-radius:var(--r);padding:6px;touch-action:none;user-select:none}
+.pix .px{width:23px;height:23px;border-radius:3px;background:var(--surface);cursor:crosshair;transition:background .06s}
+.pix .px.on{background:var(--ink)}
+.pix.ro .px{cursor:default}
+@media (max-width:420px){.pix .px{width:19px;height:19px}}
+
+/* tokens */
+.toks{display:flex;flex-wrap:wrap;gap:9px}
+.tok{position:relative;border:none;background:var(--surface-2);color:var(--ink);font-size:16px;font-weight:600;border-radius:10px;padding:10px 14px;cursor:pointer;transition:transform .14s}
+.tok:hover{transform:translateY(-2px)}
+.tok.q{background:var(--sig);color:var(--bg)}
+.tok .aw{position:absolute;top:-8px;right:-6px;font-family:var(--mono);font-size:10px;background:var(--sig);color:#fff;border-radius:99px;padding:1px 6px;opacity:0;transition:opacity .2s}
+.tok.lit .aw{opacity:1}
+
+/* steps */
+.steps{display:grid;gap:9px}
+.stepitem{display:grid;grid-template-columns:auto 1fr auto;gap:13px;align-items:center;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-lg);padding:13px 15px}
+.stepitem .ix{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-3);width:22px;text-align:center}
+.stepitem .lbl{font-size:14.5px;font-weight:500;letter-spacing:-.02em}
+.stepitem .mv{display:flex;gap:6px}
+.mvb{border:1px solid var(--line);background:transparent;color:var(--ink-2);font-size:13px;border-radius:8px;width:32px;height:32px;cursor:pointer;line-height:1}
+.mvb:hover{border-color:var(--sig);color:var(--sig-ink)}
+.stepitem.good{border-color:var(--ok);background:var(--ok-soft)}
+.stepitem.bad{border-color:var(--sig);background:var(--sig-soft)}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px}
+.tbl th,.tbl td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--ink-3);font-weight:600;text-transform:uppercase}
+.tbl td{letter-spacing:-.015em}
+.tblwrap{overflow-x:auto}
+
+/* ---------- 수업 노트 ---------- */
+.note-tools{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:18px 0 24px}
+.note-page{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:34px 36px;margin-bottom:20px;max-width:196mm}
+.np-head{border-bottom:2px solid var(--ink);padding-bottom:13px;margin-bottom:22px}
+.np-code{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink-3);text-transform:uppercase}
+.np-title{font-family:var(--serif);font-size:25px;font-weight:700;letter-spacing:-.03em;margin:6px 0 10px}
+.np-id{font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:.03em}
+.np-sec{margin-bottom:26px}
+.np-sec h5{font-size:14px;font-weight:700;margin:0 0 13px;letter-spacing:-.02em;color:var(--ink)}
+.np-sec p{margin:0 0 6px;font-size:13px;line-height:1.7;color:var(--ink-2)}
+.np-sec ul{margin:0;padding-left:16px}
+.np-sec li{font-size:13px;line-height:1.9;color:var(--ink-2);margin-bottom:2px}
+.np-q{font-weight:600;color:var(--ink)}
+.np-line{border-bottom:1px solid var(--line);height:32px}
+.np-fields{display:grid;gap:9px}
+.np-f{display:grid;grid-template-columns:minmax(150px,42%) 1fr;gap:12px;align-items:end}
+.np-f span{font-size:12.5px;color:var(--ink-2)}
+.np-f i{border-bottom:1px solid var(--line);height:20px;display:block}
+.np-terms{display:grid;grid-template-columns:1fr 1fr;gap:18px 26px}
+@media (max-width:620px){.np-terms{grid-template-columns:1fr}}
+.np-sas{display:grid;gap:16px}
+.np-sa{display:grid;grid-template-columns:auto 1fr minmax(90px,150px);gap:9px;align-items:end}
+.np-sq{font-size:14px;color:var(--ink);font-weight:500;line-height:1.6}
+.np-sa i{border-bottom:1px solid var(--line);height:26px;display:block}
+.np-term{border-left:2px solid var(--sig);padding-left:12px}
+.np-t{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.np-t b{font-size:15px;letter-spacing:-.02em}
+.np-en{font-family:var(--mono);font-size:10px;color:var(--ink-3);letter-spacing:.04em}
+.np-d{font-size:13.5px;color:var(--ink-2);line-height:1.75;margin-top:4px}
+.np-s{font-size:13.5px;color:var(--ink-3);line-height:1.75;margin-top:4px}
+.np-qs{display:grid;gap:12px}
+.np-qh{display:flex;gap:10px;align-items:baseline;font-size:14px;font-weight:600;color:var(--ink);line-height:1.65;margin-bottom:12px}
+.np-qn{font-family:var(--mono);font-size:11px;color:var(--sig-ink);flex:none;font-weight:700}
+@page{size:A4;margin:15mm 16mm}
+@media print{
+	.side,.topbar,.scrim,.toast,.note-tools,.lhead{display:none !important}
+	.main{margin-left:0}
+	.view{max-width:none;padding:0}
+	body,.app{background:#fff}
+	body{font-size:11pt;line-height:1.75;letter-spacing:-.01em}
+	.note-page{border:none;border-radius:0;padding:0;margin:0;max-width:none;background:#fff;color:#000;page-break-after:always;break-after:page}
+	.note-page:last-child{page-break-after:auto;break-after:auto}
+	.np-head{border-bottom:1.4pt solid #000;padding-bottom:3mm;margin-bottom:5mm}
+	.np-code{color:#555;font-size:8.5pt;letter-spacing:.14em}
+	.np-title{color:#000;font-size:17pt;margin:2mm 0 2.5mm}
+	.np-id{color:#333;font-size:10pt;letter-spacing:.02em}
+	.np-sec{margin-bottom:6.5mm}
+	.np-sec h5{color:#000;font-size:11.5pt;margin-bottom:4mm}
+	.np-terms{grid-template-columns:1fr 1fr;gap:5mm 8mm}
+	.np-term{border-left:1.5pt solid #555;padding-left:4mm}
+	.np-t{gap:2.5mm}
+	.np-t b{font-size:11pt;color:#000}
+	.np-en{color:#666;font-size:8.5pt}
+	.np-d{color:#000;font-size:10pt;line-height:1.6;margin-top:1.4mm}
+	.np-s{color:#333;font-size:10pt;line-height:1.6;margin-top:1.4mm}
+	.np-sas{gap:5mm}
+	.np-sa{grid-template-columns:auto 1fr 44mm;gap:3mm}
+	.np-sq{color:#000;font-size:10.5pt;line-height:1.5}
+	.np-sa i{border-bottom:.8pt solid #888;height:8mm}
+	.np-qh{color:#000;font-size:10.5pt;line-height:1.55;margin-bottom:3.5mm}
+	.np-qn{color:#000;font-size:10.5pt}
+	.np-line{border-bottom:.8pt solid #888;height:11.5mm}
+}
+.lnav{display:flex;gap:12px;margin-top:30px}
+.btn.next-on{background:var(--sig);color:#fff;animation:nextpop .5s cubic-bezier(.34,1.4,.64,1)}
+@keyframes nextpop{0%{transform:scale(1)}45%{transform:scale(1.035)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.btn.next-on{animation:none}}
+.lnav .btn{flex:1}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(16px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);font-size:14px;font-weight:700;padding:13px 22px;border-radius:99px;box-shadow:var(--e3);transition:opacity .26s,transform .26s;z-index:60;max-width:86vw;text-align:center;letter-spacing:-.02em}
+.toast.show{opacity:1;transform:translateX(-50%)}
+</style>
+
+<div class="app" id="app">
+	<aside class="side" id="side">
+		<div class="side-head">
+			<div>
+				<div class="code">GEA8811</div>
+				<div class="side-title">인공지능입문<br>실습판</div>
+			</div>
+			<button class="side-x" id="sideX" aria-label="메뉴 닫기">✕</button>
+		</div>
+		<div class="side-search"><input id="navSearch" class="txtin" placeholder="주차 검색" autocomplete="off"></div>
+		<nav class="side-nav" id="sideNav"></nav>
+		<div class="side-foot">
+			<div class="side-prog">
+				<div class="ptrack"><div class="pfill" id="pFill"></div></div>
+				<div class="ptxt" id="pTxt">0 / 14</div>
+			</div>
+			<button class="theme-btn" id="themeBtn">밝기</button>
+		</div>
+	</aside>
+	<div class="scrim" id="scrim"></div>
+	<main class="main">
+		<header class="topbar">
+			<button class="burger" id="burger" aria-label="메뉴 열기">☰</button>
+			<span class="crumb" id="crumb">실습</span>
+			<span class="topspacer"></span>
+			<span class="wknum" id="lWk"></span>
+		</header>
+		<div class="view" id="view"></div>
+	</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+var STAGES={};
+var el=function(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;};
+var $=function(s){return document.querySelector(s);};
+function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove("show");},2400);}
+function clamp(v,a,b){return v<a?a:v>b?b:v;}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=(i*7919+13)%(i+1);var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+/* ---------- 진행 기록 ---------- */
+var KEY="gea8811-lab-v6", progress={};
+try{progress=JSON.parse(localStorage.getItem(KEY)||"{}");}catch(e){progress={};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(progress));}catch(e){}}
+function markDone(n){if(progress[n])return;progress[n]=1;save();updateProgress();renderNav();toast(n+"주차를 끝냈습니다");}
+
+/* ---------- 주차 내용 ---------- */
+var WEEKS=[
+{n:1,block:"기초·원리",title:"인공지능 개요",sub:"무엇을 대신할 수 있고 무엇을 못하나",stage:"taskmap",
+ goal:"인공지능(AI)이 잘하는 일과 아직 못하는 일을 나누어 봅니다.",
+ predict:{q:"다음 중 지금의 AI가 가장 어려워하는 일은 무엇일까요?",opts:["영어 계약서 20쪽을 요약하기","처음 가 본 사무실에서 커피를 타 오기","고객 후기 1만 건을 좋음과 나쁨으로 나누기","발표 슬라이드 초안 만들기"],a:1,
+ ok:"맞습니다. AI는 화면 안에서 글과 숫자를 다루는 일을 잘합니다. 하지만 처음 보는 공간에서 몸을 움직이는 일은 아직 어렵습니다.",
+ no:"답은 ②번입니다. ①③④번은 이미 회사에서 쓰고 있는 일입니다. 처음 보는 공간에서 몸을 움직이는 일만 아직 어렵습니다."},
+ observe:["하나의 일은 여러 부분으로 이루어져 있습니다. <b>정보를 다루는 부분</b>과 <b>사람이 책임지는 부분</b>입니다.","AI는 <b>반복적이고 규칙이나 패턴을 활용할 수 있는 일</b>에서 강점을 보일 수 있습니다. 하지만 정확성과 위험도에 따라 사람의 검토가 필요합니다.","책임이 큰 결정은 AI의 결과만으로 확정하지 않고, <b>사람이 판단하고 책임지는 절차</b>가 필요합니다."],
+ key:"일을 통째로 보지 말고 <b>부분으로 나누어</b> 보세요. 그러면 무엇을 맡길 수 있는지 바로 보입니다.",
+ check:{q:"AI에게 맡기기 가장 알맞은 일은 무엇일까요?",opts:["거래처와의 최종 계약 조건 정하기","회의록 300건에서 자주 나오는 불만 찾기","팀원 성과 등급 확정하기","신제품을 낼지 말지 결정하기"],a:1,
+ ok:"맞습니다. 여러 번 반복되고 사례가 많은 일이라서 AI가 잘합니다.",no:"답은 ②번입니다. 나머지 셋은 결과에 책임이 따르는 결정이라 사람이 해야 합니다."}},
+
+{n:2,block:"기초·원리",title:"규칙기반에서 학습기반으로",sub:"스팸 문자 걸러내기",stage:"rulebot",
+ goal:"광고 문자를 거르는 규칙을 직접 만들어 봅니다. 그리고 규칙만으로는 안 되는 지점을 찾습니다.",
+ predict:{q:"막을 단어를 100개, 1000개로 계속 늘리면 광고 문자를 다 막을 수 있을까요?",opts:["할 수 있습니다. 광고에 쓰는 말은 정해져 있습니다.","어렵습니다. 정상 문자까지 막히기 시작합니다."],a:1,
+ ok:"맞습니다. ‘무료’를 막으면 ‘무료 배송 안내’도 막힙니다. 광고는 단어를 띄어 써서 규칙을 피해 갑니다.",
+ no:"답은 ②번입니다. ‘무료’를 막으면 ‘무료 배송 안내’ 같은 정상 문자도 막힙니다. 광고 쪽은 단어를 띄어 써서 규칙을 피해 갑니다."},
+ observe:["규칙기반(rule-based)은 두 가지로 실패합니다. 광고를 놓치는 <b>거짓 음성</b>과 정상 문자를 막는 <b>거짓 양성</b>입니다.","단어를 띄어 쓰면(대 출) 규칙을 그냥 지나갑니다. 사람은 다 알아보는데도 그렇습니다.","학습기반 모델은 사람이 모든 규칙을 일일이 적는 대신, <b>예시와 정답(라벨)</b>을 바탕으로 패턴을 학습합니다. 이 실습에서는 광고인지 아닌지만 표시해 봅니다.","규칙기반에서는 ‘이 단어 때문’처럼 사람이 정한 규칙을 직접 가리킬 수 있습니다. 학습 모델의 판단은 여러 입력의 결합으로 이루어질 수 있어 <b>단순한 한 줄 규칙으로 설명하기 어려울 수 있습니다</b>.","기계가 이유를 숨기는 것이 아닙니다. 이유가 <b>여러 단어에 조금씩 흩어져</b> 있는 것입니다."],
+ key:"규칙기반은 <b>사람이 규칙을 명시합니다</b>. 학습기반은 <b>예시와 정답을 바탕으로 모델이 패턴을 학습합니다</b>. 모델이 복잡해질수록 판단 근거를 단순한 규칙 한 줄로 설명하기 어려울 수 있습니다.",
+ check:{q:"학습기반 모델의 판단을 사람이 정한 규칙 한 줄로 설명하기 어려운 까닭은 무엇일까요?",opts:["기계가 이유를 숨기기 때문입니다","이유가 단어 하나가 아니라 여러 단어에 조금씩 흩어져 있기 때문입니다","기계가 계산을 안 하기 때문입니다","단어 점수가 없기 때문입니다"],a:1,
+ ok:"맞습니다. 실습에서 단어를 하나씩 빼 봐도 답이 잘 바뀌지 않았습니다. 이 문제를 다루는 시간이 12주 설명가능한 AI(XAI)입니다.",no:"답은 ②번입니다. 단어를 하나 빼도 답이 잘 바뀌지 않았던 것을 떠올려 보세요. 이유가 한 곳에 없습니다."}},
+
+{n:3,block:"기초·원리",title:"머신러닝",sub:"Teachable Machine으로 직접 학습시키기 · 데이터와 일반화",stage:"teachable",
+ goal:"정답이 붙은 예시를 직접 모아 모델을 학습시킵니다. 그리고 새로운 사진에서 잘 맞히는지 확인하면서 데이터의 양·다양성·균형이 왜 중요한지 알아봅니다.",
+ predict:{q:"두 종류의 물건을 각각 몇 장씩 보여 주고 모델을 학습시켰습니다. 새로운 사진을 잘 맞히게 하려면 무엇이 가장 중요할까요?",opts:["학습 사진을 많이 모으되 같은 구도와 배경만 반복합니다","각 종류를 여러 각도·거리·배경에서 골고루 보여 주고, 학습에 쓰지 않은 새로운 사진으로 테스트합니다","한 종류의 사진만 많이 넣습니다","학습이 끝난 뒤 같은 사진으로 다시 확인합니다"],a:1,
+ ok:"맞습니다. 학습 데이터가 다양한 상황을 충분히 대표하고, 학습에 사용하지 않은 새로운 예시로 테스트해야 일반화가 되는지 확인할 수 있습니다.",
+ no:"답은 ②번입니다. 같은 사진을 많이 보여 주는 것보다 다양한 조건의 예시를 주고, 학습에 사용하지 않은 새로운 예시로 테스트하는 것이 중요합니다."},
+ observe:["Teachable Machine에서는 먼저 <b>클래스(분류할 종류)</b>를 만들고 각 클래스에 예시를 모은 뒤 <b>Train Model</b>로 모델을 학습시킵니다.","학습이 끝났다고 해서 새로운 사진을 항상 잘 맞히는 것은 아닙니다. <b>학습에 사용하지 않은 새로운 예시</b>로 테스트해야 합니다.","한 종류에만 사진이 몰리거나 배경·각도·거리 등이 지나치게 비슷하면, 모델이 우리가 의도한 특징보다 <b>우연한 단서</b>를 이용할 수 있습니다.","사진을 더 다양하게 다시 모아 학습하고 테스트했을 때 결과가 좋아지는지 비교해 보세요. 이것이 <b>일반화</b>와 데이터 품질을 이해하는 출발점입니다."],
+ key:"머신러닝은 <b>예시 데이터에서 패턴을 학습</b>합니다. 좋은 결과를 얻으려면 데이터가 목표로 하는 상황을 잘 대표해야 하고, <b>학습에 사용하지 않은 새로운 데이터</b>로 성능을 확인해야 합니다.",
+ check:{q:"Teachable Machine으로 물건 A와 B를 분류하는 모델을 만들었습니다. 모델이 실제 상황에서도 잘 작동하는지 확인하려면 무엇을 해야 할까요?",opts:["학습에 사용했던 사진을 다시 넣어 확인합니다","A와 B의 학습 사진 수만 계속 늘립니다","학습에 사용하지 않은 새로운 사진을 여러 조건에서 넣어 결과를 확인합니다","모델의 이름을 바꿉니다"],a:2,
+ ok:"맞습니다. 새로운 데이터로 테스트해야 모델이 학습한 예시를 단순히 외운 것이 아니라 새로운 입력에도 잘 일반화하는지 확인할 수 있습니다.",no:"답은 ③번입니다. 학습에 사용하지 않은 새로운 사진으로 테스트해야 일반화 여부를 확인할 수 있습니다."}},
+
+{n:4,block:"기초·원리",title:"신경망과 딥러닝",sub:"가중치와 임계값을 스스로 찾아가는 과정",stage:"neural",
+ goal:"인공 뉴런의 가중치와 임계값을 직접 조정해 봅니다. 그다음 같은 일을 모델이 스스로 학습하게 해서 비교합니다.",
+ predict:{q:"기계가 '배운다'는 말을 계산으로 바꾸면 무엇에 가까울까요?",opts:["정답을 통째로 외웁니다","오차를 줄이는 쪽으로 가중치를 조금씩 조정합니다","규칙을 하나씩 더합니다","데이터를 작게 줄여 저장합니다"],a:1,
+ ok:"맞습니다. 학습은 오차를 줄이는 방향으로 가중치를 조금씩 조정하는 일을 반복하는 것입니다. 이 방법을 경사하강법(gradient descent)이라고 합니다.",
+ no:"답은 ②번입니다. 학습은 오차를 줄이는 방향으로 가중치를 조정하는 일을 반복하는 것입니다. 이 방법을 경사하강법(gradient descent)이라고 합니다."},
+ observe:["인공 뉴런은 <b>입력에 가중치를 곱해 더한 값</b>(가중합)이 임계값을 넘는지만 봅니다.","학습에서는 손실(loss)을 줄이는 방향으로 <b>가중치와 다른 파라미터를 업데이트</b>합니다. 경사하강법은 그 업데이트에 널리 쓰이는 방법 중 하나입니다.","<b>학습률</b>이 너무 크면 최저점을 지나쳐 값이 진동합니다. 너무 작으면 수렴이 느립니다."],
+ key:"딥러닝은 이런 계산을 <b>여러 층으로 구성한 신경망</b>을 학습시키는 방법입니다. 더 복잡한 패턴을 표현할 수 있지만, 모델의 판단 과정을 사람이 직접 따라가기는 어려워질 수 있습니다.",
+ check:{q:"층을 깊게 쌓으면 함께 커지는 문제는 무엇일까요?",opts:["학습 데이터가 필요 없어집니다","판단의 근거를 따라가기 어려워집니다","계산이 단순해집니다","틀린 정도가 저절로 0이 됩니다"],a:1,
+ ok:"맞습니다. 12주 설명가능한 AI(XAI)로 이어지는 문제입니다.",no:"답은 ②번입니다. 판단의 근거가 잘 안 보이게 됩니다. 12주에 다룹니다."}},
+
+{n:5,block:"기초·원리",title:"특징과 표현",sub:"사진 속 단서를 찾아보기 · 특징(feature)과 표현",stage:"features",
+ goal:"같은 물건도 각도·거리·밝기·배경에 따라 사진이 달라진다는 것을 보고, 분류에 유용한 특징과 표현이 왜 필요한지 직관적으로 이해합니다.",
+ predict:{q:"컵을 사진으로 분류한다고 할 때, 여러 사진에서 ‘컵’이라는 공통점을 찾는 데 더 도움이 되는 것은 무엇일까요?",opts:["사진 파일의 이름","모든 픽셀을 아무 구분 없이 똑같이 보기","모양·윤곽·질감처럼 분류에 도움이 되는 반복적인 특징","사진을 찍은 사람의 이름"],a:2,
+ ok:"맞습니다. 분류에 도움이 되는 반복적인 단서, 즉 특징(feature)을 표현하는 것이 중요합니다.",
+ no:"답은 ③번입니다. 사진마다 픽셀은 달라도 모양·윤곽·질감처럼 반복되는 특징은 분류에 도움이 될 수 있습니다."},
+ observe:["같은 물건도 <b>각도·거리·밝기·배경</b>이 달라지면 픽셀은 크게 달라집니다.","특징(feature)은 입력에서 <b>분류나 예측에 도움이 되는 정보</b>를 나타내는 방식입니다.","전통적인 머신러닝에서는 사람이 특징을 설계하기도 했지만, 딥러닝에서는 신경망이 데이터에서 유용한 표현을 <b>학습</b>할 수 있습니다.","오늘은 CNN 수식을 계산하지 않고, <b>어떤 시각적 단서가 분류에 유용한지</b> 직접 비교해 봅니다."],
+ key:"딥러닝은 입력에서 예측에 유용한 <b>특징과 표현</b>을 여러 단계에 걸쳐 학습할 수 있습니다.",
+ check:{q:"딥러닝에서 ‘특징을 학습한다’는 말은 무엇을 뜻할까요?",opts:["사람이 모든 규칙을 미리 입력한다는 뜻입니다","모델이 입력에서 예측에 도움이 되는 패턴이나 표현을 학습한다는 뜻입니다","사진 파일 이름을 외운다는 뜻입니다","모든 사진을 똑같이 처리한다는 뜻입니다"],a:1,
+ ok:"맞습니다. 딥러닝에서는 사람이 모든 특징을 일일이 지정하지 않아도 데이터에서 유용한 표현을 학습할 수 있습니다.",no:"답은 ②번입니다. 데이터에서 예측에 유용한 패턴이나 표현을 학습하는 것이 핵심입니다."}},
+
+{n:6,block:"기초·원리",title:"생성형 AI",sub:"다음 단어 예측 · 생성 · 한계",stage:"genlm",
+ goal:"글에서 단어 빈도표를 직접 만들어 문장을 생성합니다. 그리고 그 문장이 원문에 있는지 대조해 봅니다.",
+ predict:{q:"AI가 사실이 아닌 내용을 자신 있게 말하는 이유는 무엇일까요?",opts:["배운 자료에 거짓말이 많아서","가장 그럴듯한 다음 단어를 고르는 방식이라, 사실을 확인하는 단계가 없어서","사람을 속이도록 만들어져서","질문이 어려워서"],a:1,
+ ok:"맞습니다. 문장을 이어 붙이는 구조 안에 사실 확인 단계가 없습니다.",
+ no:"답은 ②번입니다. 문장을 이어 붙이는 구조 안에 사실을 확인하는 단계가 아예 없습니다."},
+ observe:["생성형 언어 모델은 앞의 맥락을 바탕으로 <b>다음 토큰이 나올 확률 분포</b>를 계산하고, 그 분포에 따라 토큰을 선택해 문장을 이어 갑니다.","온도(temperature) 값이 낮으면 뻔한 답이 나옵니다. 높으면 다양하지만 엉뚱해집니다.","모델이 생성한 문장은 학습 자료의 문장을 그대로 복사하는 것과는 다릅니다. 학습한 패턴을 바탕으로 <b>새로운 토큰 시퀀스</b>를 생성할 수 있습니다.","읽으면 자연스러운데 사실은 틀린 문장이 이렇게 만들어집니다. 특히 <b>구체적인 이름·숫자·연도·출처</b>처럼 검증 가능한 사실은 반드시 따로 확인하는 습관이 중요합니다."],
+ key:"생성형 AI는 <b>언어 패턴을 바탕으로 결과를 생성하는 모델</b>이지, 생성 과정 자체가 사실 여부를 보장하는 데이터베이스는 아닙니다. 따라서 중요한 사실·숫자·출처는 별도로 확인해야 합니다.",
+ check:{q:"보고서에 넣을 숫자를 AI가 알려 줬습니다. 다음에 무엇을 해야 할까요?",opts:["출처를 물어보고, 원래 자료를 직접 열어 맞춰 봅니다","한 번 더 물어서 같은 답이 나오면 믿습니다","다른 AI에도 물어 같으면 믿습니다","표현만 바꿔서 씁니다"],a:0,
+ ok:"맞습니다. 같은 답이 여러 번 나오는 것은 근거가 아닙니다.",no:"답은 ①번입니다. 같은 답이 여러 번 나오는 것은 근거가 되지 않습니다."}},
+
+{n:7,block:"중간 점검",title:"중간 정리와 사전 진단",sub:"1~6주 종합 · 요청문 비교",stage:"midreview",
+ goal:"1~6주 내용을 문제로 점검합니다. 그리고 같은 과제를 어떻게 요청하면 결과가 달라지는지 봅니다.",
+ predict:{q:"같은 AI에 같은 과제를 시켜도 사람마다 결과가 다릅니다. 가장 큰 이유는 무엇일까요?",opts:["운","원하는 것을 얼마나 분명히 적었는가","질문의 길이","사용한 도구의 종류"],a:1,
+ ok:"맞습니다. 9주 프롬프트와 맥락 설계가 바로 이 차이를 다룹니다.",
+ no:"답은 ②번입니다. 원하는 것을 얼마나 분명히 적었는지가 결과를 가릅니다. 9주에 자세히 다룹니다."},
+ observe:["자주 틀린 주차가 곧 복습할 주차입니다.","요청문에 <b>산출물·형식·독자·성공기준</b>이 빠질수록 결과가 흔들립니다.","좋은 요청문은 길이로 정해지지 않습니다. <b>빠진 칸이 없는지</b>로 정해집니다."],
+ key:"여기까지가 중간고사 범위(1~6주)입니다. 다음 절반은 <b>AI를 실제로 쓰는 방법</b>입니다.",
+ check:{q:"9주부터 배우는 순서는 무엇일까요?",opts:["모델을 직접 만드는 기술","명세 → 맥락 → 위임 → 도구 연계 → 산출 → 검증 → 성찰","프로그래밍 언어","통계 이론"],a:1,
+ ok:"맞습니다. 이 순서대로 9주부터 14주까지 이어집니다.",no:"답은 ②번입니다. 이 순서대로 9주부터 14주까지 이어집니다."}},
+
+{n:8,exam:true,block:"중간 점검",title:"중간고사",sub:"필기시험 · 1~6주"},
+
+{n:9,block:"활용·성찰",title:"프롬프트와 맥락 설계",sub:"명세 4칸 · 맥락 넘기기",stage:"spec",
+ goal:"원하는 결과를 명세로 적어 봅니다. 그리고 AI가 모르는 정보를 넘겨 결과가 달라지는 것을 확인합니다.",
+ predict:{q:"AI가 우리 동아리 소개 글을 잘 써 줬습니다. 그런데 없는 활동이 들어 있었습니다. 왜 그럴까요?",opts:["AI 성능이 낮아서","우리 동아리 정보를 주지 않아서, 비슷한 동아리 이야기로 빈칸을 채워서"],a:1,
+ ok:"맞습니다. 정보를 주지 않으면 AI는 빈칸을 그럴듯한 일반적인 내용으로 채웁니다.",
+ no:"답은 ②번입니다. 정보를 주지 않으면 AI는 빈칸을 그럴듯한 일반적인 내용으로 채웁니다."},
+ observe:["명세에서 가장 자주 비는 칸은 <b>성공기준</b>과 <b>하지 말 것</b>입니다.","맥락 카드를 붙이면 문장이 <b>우리 이야기</b>로 바뀝니다.","'확인된 사실 목록'에 없는 내용이 결과에 나오면, 그것이 지어낸 부분입니다."],
+ key:"기준을 적은 쪽지는 제출물이 아닙니다. <b>도구</b>입니다. 요청할 때마다 함께 붙여야 결과가 한 방향으로 모입니다.",
+ check:{q:"요청문에서 자주 비워 두지만 가장 중요한 칸은 무엇일까요?",opts:["색 3개","하지 말 것 3개","톤 형용사 3개","한 줄 정의"],a:1,
+ ok:"맞습니다. 하지 말 것이 없는 명세는 명세가 아닙니다.",no:"답은 ②번입니다. 하지 말 것이 없는 명세는 명세가 아닙니다."}},
+
+{n:10,block:"활용·성찰",title:"에이전트형 AI와 오케스트레이션",sub:"목표 나누기 · 도구 잇기",stage:"orchestra",
+ goal:"하나의 목표를 작은 작업으로 나눕니다. 순서를 정하고 작업마다 알맞은 도구를 붙입니다.",
+ predict:{q:"여러 도구를 이어 쓸 때 결과가 무너지는 곳은 주로 어디일까요?",opts:["도구를 너무 적게 써서","앞 단계 결과를 확인하지 않고 다음 단계로 넘겨서","도구가 서로 달라서","단계가 너무 많아서"],a:1,
+ ok:"맞습니다. 확인하지 않은 잘못은 뒤로 갈수록 커집니다.",
+ no:"답은 ②번입니다. 앞에서 확인하지 않은 잘못은 뒤로 갈수록 커집니다."},
+ observe:["목표를 그대로 던지면 결과가 흩어집니다. <b>작업으로 나누면</b> 관리할 수 있습니다.","작업마다 <b>무엇을 넣고 무엇을 받을지</b> 정해야 다음으로 넘길 수 있습니다.","확인 단계를 빼면 앞의 잘못이 마지막 결과까지 그대로 갑니다."],
+ key:"오케스트레이션(orchestration)은 도구를 많이 쓰는 일이 아닙니다. <b>순서와 확인 지점을 정하는 일</b>입니다.",
+ check:{q:"자료 조사 → 초안 → 이미지 → 페이지 순서에서 꼭 넣어야 할 단계는 무엇일까요?",opts:["조사한 내용이 사실인지 확인하기","글꼴 고르기","색 맞추기","파일 이름 정리하기"],a:0,
+ ok:"맞습니다. 사실 확인이 빠지면 뒤의 모든 결과가 잘못됩니다.",no:"답은 ①번입니다. 사실 확인이 빠지면 뒤의 모든 결과가 잘못됩니다."}},
+
+{n:11,block:"활용·성찰",title:"결과가 흔들리는 이유",sub:"AI는 왜 매번 다르게 만드나",stage:"brandcheck",
+ goal:"같은 요청을 여러 번 하면 왜 결과가 달라지는지 확인하고, 한 방향으로 모으는 방법을 익힙니다.",
+ predict:{q:"AI에게 같은 것을 세 번 만들어 달라고 하면 결과가 어떨까요?",opts:["세 번 다 거의 같습니다","달라질 수 있습니다. 생성 과정에 확률적 요소가 있기 때문입니다"],a:1,
+ ok:"맞습니다. 6주차에서 본 것처럼 생성형 AI에는 확률적 생성 과정이 있어 같은 요청에도 결과가 달라질 수 있습니다. 다만 설정과 사용 환경에 따라 결과가 매우 비슷하거나 같을 수도 있습니다.",
+ no:"답은 ②번입니다. 6주차에서 본 것처럼 AI는 확률로 단어를 고릅니다. 그래서 매번 다릅니다."},
+ observe:["기준 없이 반복 요청하면 말투와 내용이 달라질 수 있습니다. 이것은 반드시 오류라기보다 <b>생성 과정의 변동성과 불충분한 제약</b>이 함께 작용한 결과일 수 있습니다.","기준을 함께 주면 세 결과가 같은 방향으로 모입니다.","확인된 사실에 없는 숫자가 들어가면 그것은 지어낸 것입니다.","조금 부풀려 말하는 것과 <b>없는 사실을 만드는 것</b>은 다릅니다. 그 선은 직접 그어야 합니다."],
+ key:"결과를 한 방향으로 모으는 것은 재능이 아닙니다. <b>요청할 때마다 같은 기준을 함께 넘기는 절차</b>입니다. 기준이 먼저, 만드는 것은 나중입니다.",
+ check:{q:"AI가 만든 결과를 쓰기 전에 반드시 확인할 것은 무엇일까요?",opts:["글자 크기","숫자와 연도가 확인된 사실 안에 있는가","이미지 개수","문장 길이"],a:1,
+ ok:"맞습니다. 확인된 사실에 없는 숫자가 있으면 그것은 지어낸 것입니다.",no:"답은 ②번입니다. 확인된 사실에 없는 숫자가 있으면 그것은 지어낸 것입니다."}},
+
+{n:12,block:"활용·성찰",title:"설명가능한 인공지능(XAI)",sub:"판단 근거 · 출처 확인",stage:"xai",
+ goal:"AI가 무엇을 보고 판단했는지 확인합니다. 그리고 답변의 출처를 직접 열어 맞춰 봅니다.",
+ predict:{q:"AI에게 ‘왜 그렇게 답했어?’라고 물었을 때, 그 설명만으로 실제 내부 판단 과정을 확인할 수 있을까요?",opts:["그렇습니다. 안에 기록된 과정을 보여 줍니다.","아닙니다. 생성된 설명이 실제 내부 계산 과정을 그대로 기록한 것이라고 보장할 수 없습니다."],a:1,
+ ok:"맞습니다. 그래서 확인은 설명이 아니라 <b>출처 대조</b>로 해야 합니다.",
+ no:"답은 ②번입니다. 그 설명도 새로 만들어 낸 문장일 수 있습니다. 그래서 출처를 직접 열어 확인해야 합니다."},
+ observe:["모델의 예측에 어떤 입력 특성이 얼마나 기여했는지를 추정하는 방법이 있습니다. 다만 <b>사후 설명이 곧 모델의 실제 내부 원인과 동일하다고 단정할 수는 없습니다</b>.","출처를 직접 열어 보면 <b>없음·다름·맞음</b>으로 갈립니다.","사람의 삶에 영향을 주는 결정에는 설명·이의제기·사람의 최종 확인이 필요합니다."],
+ key:"잘 맞히는 것과 <b>납득할 수 있는 것</b>은 다릅니다. 근거를 요구할 수 있어야 믿을지 말지 정할 수 있습니다.",
+ check:{q:"AI가 알려 준 출처를 확인하는 가장 확실한 방법은 무엇일까요?",opts:["출처 형식이 맞는지 봅니다","링크를 열어 그 문장이 정말 있는지 맞춰 봅니다","출처가 몇 개인지 셉니다","AI에게 다시 확인시킵니다"],a:1,
+ ok:"맞습니다. 원래 자료와 맞춰 보는 것만이 확인입니다.",no:"답은 ②번입니다. 형식·개수·재확인은 근거가 되지 않습니다."}},
+
+{n:13,block:"활용·성찰",title:"AI 시대의 인간 사고",sub:"인지적 오프로딩 · 메타인지",stage:"offload",
+ goal:"무엇을 맡기고 무엇을 직접 할지 나만의 기준을 만듭니다.",
+ predict:{q:"메모·계산기·길찾기처럼 기억과 계산을 밖에 맡기는 것은 무엇일까요?",opts:["사람이 오래전부터 써 온 방법입니다","최근에 생긴 나쁜 습관입니다"],a:0,
+ ok:"맞습니다. 맡기는 것 자체는 문제가 아닙니다. <b>판단까지 넘길 때</b> 문제가 생깁니다.",
+ no:"답은 ①번입니다. 사람은 오래전부터 기억과 계산을 밖에 맡겨 왔습니다. 문제는 판단까지 넘길 때 생깁니다."},
+ observe:["외부 도구에 기억이나 계산을 맡기면 <b>당장의 인지 부담을 줄일 수 있습니다</b>. 다만 과업에 따라 직접 연습하고 이해를 확인하는 과정도 필요합니다.","완성도 높은 AI 결과물을 읽는 것만으로는 <b>내가 내용을 충분히 이해했다고 착각할 수 있습니다</b>. 직접 설명하거나 적용해 보는 과정이 필요합니다.","먼저 스스로 초안을 쓰면, 같은 AI를 써도 결과가 달라집니다."],
+ key:"기준은 하나입니다. <b><b>중요한 판단과 책임은 내가 확인하고, 반복적 작업은 AI에게 적절히 위임합니다.</b></b> 그 선은 사람마다 다릅니다. 그래서 직접 정해야 합니다.",
+ check:{q:"AI 사용 규칙으로 가장 알맞은 것은 무엇일까요?",opts:["초안은 내가 쓰고, 반대 의견은 AI에게 받고, 출처는 꼭 확인합니다","모든 과제를 AI로 먼저 만든 뒤 고칩니다","AI를 쓰지 않습니다","AI가 준 결과를 그대로 냅니다"],a:0,
+ ok:"맞습니다. 판단은 남기고 반복만 맡기는 방식입니다.",no:"답은 ①번입니다. 판단은 남기고 반복만 맡기는 방식입니다."}},
+
+{n:14,block:"활용·성찰",title:"피지컬 AI와 일자리·책임",sub:"직무 다시 나누기 · 책임 따지기",stage:"jobsplit",
+ goal:"직무를 작은 일로 나누어 무엇이 자동화되고 무엇이 남는지 봅니다. 사고가 났을 때 책임도 따져 봅니다.",
+ predict:{q:"AI가 일자리에 주는 영향을 가장 정확히 말한 것은 무엇일까요?",opts:["직업이 통째로 사라집니다","직무를 이루는 작은 일 중 일부가 자동화되고, 나머지가 다시 짜입니다"],a:1,
+ ok:"맞습니다. 직업의 영향은 단순히 ‘사라짐/유지’로만 나누기 어렵습니다. <b>과업의 일부가 자동화되고 직무가 재구성될 수 있습니다.</b>",
+ no:"답은 ②번입니다. 통째로 없어지는 것이 아니라, 작은 일 단위로 다시 짜이는 것입니다."},
+ observe:["자동화하기 쉬운 일에는 <b>반복성이 높고, 절차가 비교적 명확하며, 결과를 점검할 수 있는 과업</b>이 포함됩니다. 실제 자동화 가능성은 기술·비용·위험에 따라 달라집니다.","AI가 물리 세계로 나오면 <b>안전과 속도</b>가 새로운 조건이 됩니다.","디지털 트윈은 데이터가 없으면 만들 수 없습니다."],
+ key:"자동화되는 과업과 함께 <b>남거나 새롭게 중요해지는 과업</b>이 생길 수 있습니다. 어떤 일이 얼마나 바뀌는지는 직무와 조직에 따라 다릅니다.",
+ check:{q:"배송 로봇이 사고를 냈습니다. 책임을 따질 때 가장 먼저 확인할 것은 무엇일까요?",opts:["로봇의 색","어떤 상황에서 사람이 개입하도록 정해 두었는가","로봇 가격","만든 나라"],a:1,
+ ok:"맞습니다. 사람이 언제 개입하는지 정해 둔 내용이 판단의 출발점입니다.",no:"답은 ②번입니다. 사람이 언제 개입하도록 정해 두었는지가 판단의 출발점입니다."}},
+
+{n:15,block:"마무리",title:"기말 정리",sub:"9~14주 종합 복습",stage:"finalreview",
+ goal:"후반부 내용을 문제로 점검합니다. 그리고 약한 주차를 찾습니다.",
+ predict:{q:"기말고사 범위는 어디까지일까요?",opts:["1주부터 14주까지 전체","9주부터 14주까지","11주 실습 결과물","도구 사용법"],a:1,
+ ok:"맞습니다. 도구를 어떻게 누르는지는 시험에 나오지 않습니다.",
+ no:"답은 ②번입니다. 기말은 9~14주입니다. 도구 사용법은 시험에 나오지 않습니다."},
+ observe:["틀린 문제의 주차로 돌아가 실습을 한 번 더 하면 정리가 됩니다.","시험은 사용법을 묻지 않습니다. <b>개념·판단·확인 방법</b>을 묻습니다."],
+ key:"이 수업이 남기려는 것은 한 문장입니다. <b>이 결과의 어디를 어떻게 확인했는가.</b>",
+ check:{q:"이 수업에서 몸에 붙이려는 습관은 무엇일까요?",opts:["결과를 빨리 만드는 것","결과의 어디를 어떻게 확인했는지 말할 수 있는 것","도구를 많이 아는 것","요청문을 길게 쓰는 것"],a:1,
+ ok:"맞습니다.",no:"답은 ②번입니다."}},
+
+{n:16,exam:true,block:"마무리",title:"기말고사",sub:"필기시험 · 9~14주"}
+];
+var BLOCKS=[{name:"기초·원리",rng:"1–6주 · 중간고사 범위"},{name:"중간 점검",rng:"7–8주"},{name:"활용·성찰",rng:"9–14주 · 기말고사 범위"},{name:"마무리",rng:"15–16주"}];
+function wk(n){for(var i=0;i<WEEKS.length;i++)if(WEEKS[i].n===n)return WEEKS[i];return null;}
+var LESSONS=WEEKS.filter(function(w){return !w.exam;});
+var LNUMS=LESSONS.map(function(w){return w.n;});
+
+/* ---------- 목차 · 라우터 ---------- */
+var COURSE=(window.COURSE&&typeof window.COURSE==="object")?window.COURSE:{};
+var NOTICES=COURSE.notices||[],MATERIALS=COURSE.materials||[];
+var view=$("#view"),sideNav=$("#sideNav"),app=$("#app");
+var here={t:"home",n:0};
+var root=document.documentElement;
+function cv(n){return getComputedStyle(root).getPropertyValue(n).trim();}
+
+function setNav(on){app.classList.toggle("nav-open",!!on);}
+$("#burger").addEventListener("click",function(){setNav(true);});
+$("#sideX").addEventListener("click",function(){setNav(false);});
+$("#scrim").addEventListener("click",function(){setNav(false);});
+$("#themeBtn").addEventListener("click",function(){
+	var dark=root.getAttribute("data-theme")==="dark"||(!root.getAttribute("data-theme")&&window.matchMedia("(prefers-color-scheme:dark)").matches);
+	root.setAttribute("data-theme",dark?"light":"dark");
+	document.dispatchEvent(new CustomEvent("themechange"));
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")setNav(false);});
+
+function hashOf(){var h=location.hash||"";return h.charAt(0)==="#"?h.substring(1):h;}
+var lastRoute=null;
+function render(h){
+	h=h||"/";
+	if(h.indexOf("/week/")===0){
+		var n=parseInt(h.substring(6),10);
+		if(wk(n)&&!wk(n).exam)renderWeek(n);else renderHome();
+	}
+	else if(h.indexOf("/notices")===0)renderNotices();
+	else if(h.indexOf("/materials")===0)renderMaterials();
+	else if(h.indexOf("/notes")===0)renderNotes();
+	else renderHome();
+	lastRoute=h;
+	setNav(false);
+	window.scrollTo(0,0);
+	renderNav();
+}
+function go(h){
+	try{if(hashOf()!==h)location.hash="#"+h;}catch(e){}
+	render(h);
+}
+function openWeek(n){go("/week/"+n);}
+function closeWeek(){go("/");}
+function route(){render(hashOf());}
+window.addEventListener("hashchange",function(){
+	var h=hashOf()||"/";
+	if(h!==lastRoute)render(h);
+});
+
+function progressCount(){return LESSONS.filter(function(w){return progress[w.n];}).length;}
+function updateProgress(){
+	var done=progressCount();
+	$("#pFill").style.width=(done/LESSONS.length*100).toFixed(1)+"%";
+	$("#pTxt").textContent=done+" / "+LESSONS.length+"주차 끝냄";
+	var pn=$("#pNum");if(pn)pn.textContent=(done<10?"0":"")+done;
+}
+function nextWeek(){for(var i=0;i<LESSONS.length;i++)if(!progress[LESSONS[i].n])return LESSONS[i];return LESSONS[LESSONS.length-1];}
+
+/* ---------- 사이드바 ---------- */
+function navItem(opt){
+	var b=el("button","nav-i"+(opt.on?" on":"")+(opt.done?" done":"")+(opt.dim?" dim":""));
+	if(opt.num!=null)b.appendChild(el("span","nn",opt.num));
+	b.appendChild(el("span",null,opt.label));
+	if(opt.badge)b.appendChild(el("span","badge",String(opt.badge)));
+	if(opt.dim)b.disabled=true;else b.addEventListener("click",opt.act);
+	return b;
+}
+function renderNav(){
+	sideNav.innerHTML="";
+	var q=($("#navSearch")&&$("#navSearch").value||"").trim();
+	if(!q){
+		sideNav.appendChild(navItem({label:"개요",on:here.t==="home",act:function(){go("/");}}));
+		sideNav.appendChild(navItem({label:"공지",on:here.t==="notices",badge:NOTICES.length||null,act:function(){go("/notices");}}));
+		sideNav.appendChild(navItem({label:"자료",on:here.t==="materials",act:function(){go("/materials");}}));
+		sideNav.appendChild(navItem({label:"노트 인쇄",on:here.t==="notes",act:function(){go("/notes");}}));
+	}
+	BLOCKS.forEach(function(b){
+		var rows=WEEKS.filter(function(w){
+			if(w.block!==b.name)return false;
+			if(!q)return true;
+			return (w.title+" "+w.sub+" "+(w.goal||"")).indexOf(q)>=0;
+		});
+		if(!rows.length)return;
+		sideNav.appendChild(el("div","nav-sec",b.name));
+		rows.forEach(function(w){
+			sideNav.appendChild(navItem({
+				num:(w.n<10?"0":"")+w.n,
+				label:w.title,
+				on:here.t==="week"&&here.n===w.n,
+				done:!!progress[w.n],
+				dim:!!w.exam,
+				act:function(){openWeek(w.n);}
+			}));
+		});
+	});
+}
+if($("#navSearch"))$("#navSearch").addEventListener("input",renderNav);
+
+/* ---------- 개요 ---------- */
+function renderHome(){
+	here={t:"home",n:0};
+	$("#crumb").textContent="개요";
+	$("#lWk").textContent="";
+	view.innerHTML="";
+	var home=el("div","home");
+	var mast=el("header","mast");
+	var top=el("div","mast-top");
+	top.appendChild(el("div","code","GEA8811 · 2026-2"));
+	mast.appendChild(top);
+	var h1=el("h1");h1.innerHTML="인공지능<br>실습판";mast.appendChild(h1);
+	mast.appendChild(el("p","tagline","주차마다 실습이 하나씩 있습니다. 개념을 직접 만져 보면서 확인합니다. 코딩이나 수학은 몰라도 됩니다."));
+	var use=el("div","goal");
+	use.innerHTML='<b>이 앱은 이렇게 사용합니다</b><br>① 먼저 예측하기 → ② 직접 조작하기 → ③ 무엇이 달라졌는지 관찰하기 → ④ 확인 문제로 정리하기<br><span style="color:var(--ink-3)">정답을 빨리 맞히는 것보다, 무엇을 바꾸었고 결과가 왜 달라졌는지 이해하는 것이 중요합니다. 진행 기록은 성적과 관계없습니다.</span>';
+	mast.appendChild(use);
+	mast.appendChild(el("div","mast-meta","인문사회계열을위한인공지능입문 · 국립창원대학교"));
+	home.appendChild(mast);
+
+	var nx=nextWeek(),done=progressCount();
+	var sum=el("section","summary");
+	var left=el("div","sum-left");
+	left.appendChild(el("div","lab","다음 작업"));
+	left.appendChild(el("div","nextline",nx.n+"주차 — "+nx.title));
+	sum.appendChild(left);
+	var num=el("div","sum-num");
+	var sp=el("span",null,(done<10?"0":"")+done);sp.id="pNum";
+	num.appendChild(sp);num.appendChild(el("i",null,"/"+LESSONS.length));
+	sum.appendChild(num);
+	var gob=el("button","go","열기");
+	gob.addEventListener("click",function(){openWeek(nextWeek().n);});
+	sum.appendChild(gob);
+	home.appendChild(sum);
+
+	if(NOTICES.length){
+		var nh=el("div","blockhead");
+		nh.appendChild(el("h2",null,"공지"));
+		var more=el("span","rng","전체 보기");
+		nh.appendChild(more);
+		home.appendChild(nh);
+		NOTICES.slice(0,3).forEach(function(nt){home.appendChild(noticeCard(nt));});
+		var mb=el("button","btn gray","공지 전체 보기");
+		mb.addEventListener("click",function(){go("/notices");});
+		var mr=el("div","btnrow");mr.appendChild(mb);home.appendChild(mr);
+	}
+
+	BLOCKS.forEach(function(b){
+		var h=el("div","blockhead");h.appendChild(el("h2",null,b.name));
+		var mine=WEEKS.filter(function(w){return w.block===b.name&&!w.exam;});
+		var md=mine.filter(function(w){return progress[w.n];}).length;
+		h.appendChild(el("span","rng",mine.length?(md+"/"+mine.length+" · "+b.rng):b.rng));
+		home.appendChild(h);
+		var g=el("div","weeks");
+		WEEKS.filter(function(w){return w.block===b.name;}).forEach(function(w){
+			var btn=el("button","wk"+(w.exam?" exam":"")+(progress[w.n]?" done":"")+(!w.exam&&w.n===nx.n?" now":""));
+			btn.appendChild(el("span","no",(w.n<10?"0":"")+w.n));
+			var mid=el("span");
+			mid.appendChild(el("b","t",w.title));
+			mid.appendChild(el("span","s",w.sub));
+			btn.appendChild(mid);
+			btn.appendChild(el("span","st",w.exam?"시험":progress[w.n]?"완료":(w.n===nx.n?"다음 작업":"")));
+			if(w.exam)btn.disabled=true;else btn.addEventListener("click",function(){openWeek(w.n);});
+			g.appendChild(btn);
+		});
+		home.appendChild(g);
+	});
+
+	var foot=el("div","homefoot");
+	foot.appendChild(el("span",null,"실습 기록은 이 기기의 브라우저에만 저장됩니다. 제출용이 아닙니다."));
+	var rb=el("button","linkbtn","진행 기록 지우기");
+	rb.addEventListener("click",function(){progress={};save();route();toast("진행 기록을 지웠습니다");});
+	foot.appendChild(rb);
+	home.appendChild(foot);
+	view.appendChild(home);
+	updateProgress();
+}
+
+/* ---------- 공지 · 자료 ---------- */
+function noticeCard(nt){
+	var c=el("div","ncard");
+	c.appendChild(el("div","nd",nt.date||""));
+	c.appendChild(el("h4",null,nt.title||""));
+	if(nt.body)c.appendChild(el("p",null,nt.body));
+	if(nt.link){
+		var a=document.createElement("a");
+		a.href=nt.link;a.target="_blank";a.rel="noopener";a.textContent="열어 보기 →";
+		c.appendChild(a);
+	}
+	return c;
+}
+function renderNotices(){
+	here={t:"notices",n:0};
+	$("#crumb").textContent="공지";$("#lWk").textContent="";
+	view.innerHTML="";
+	var head=el("header","lhead");
+	head.appendChild(el("div","eyebrow","NOTICE"));
+	head.appendChild(el("h2",null,"수업 공지"));
+	view.appendChild(head);
+	if(!NOTICES.length){view.appendChild(el("div","empty","아직 등록된 공지가 없습니다."));return;}
+	NOTICES.forEach(function(nt){view.appendChild(noticeCard(nt));});
+}
+function renderMaterials(){
+	here={t:"materials",n:0};
+	$("#crumb").textContent="자료";$("#lWk").textContent="";
+	view.innerHTML="";
+	var head=el("header","lhead");
+	head.appendChild(el("div","eyebrow","MATERIALS"));
+	head.appendChild(el("h2",null,"수업 자료"));
+	head.appendChild(el("p",null,"강의노트와 안내 문서로 바로 가는 링크입니다."));
+	view.appendChild(head);
+	var any=false;
+	MATERIALS.forEach(function(g){
+		if(!g.items||!g.items.length)return;
+		any=true;
+		var wrap=el("div","mgroup");
+		wrap.appendChild(el("h4",null,g.group||""));
+		g.items.forEach(function(it){
+			var a=document.createElement("a");
+			a.className="mitem"+(it.link?"":" nolink");
+			a.href=it.link||"#";
+			if(it.link){a.target="_blank";a.rel="noopener";}
+			a.appendChild(el("span",null,it.title||""));
+			a.appendChild(el("span","arw",it.link?"→":(it.note||"준비 중")));
+			wrap.appendChild(a);
+		});
+		view.appendChild(wrap);
+	});
+	if(!any)view.appendChild(el("div","empty","아직 등록된 자료가 없습니다."));
+}
+
+/* ---------- 공통 블록 ---------- */
+function block(tag,label,title){
+	var b=el("section","block"),inn=el("div","block-in");b.appendChild(inn);
+	var h=el("div","bh");h.appendChild(el("span","tag "+tag,label));h.appendChild(el("h3",null,title));inn.appendChild(h);
+	b.inner=inn;return b;
+}
+function quizBlock(spec,tag,label,title,onRight){
+	var b=block(tag,label,title),inn=b.inner;
+	inn.appendChild(el("p","q",spec.q));
+	var wrap=el("div","opts");inn.appendChild(wrap);
+	var fb=el("div","fb");inn.appendChild(fb);
+	var tries=0,settled=false;
+	spec.opts.forEach(function(o,i){
+		var btn=el("button","opt",o);
+		btn.addEventListener("click",function(){
+			if(settled)return;
+			var right=(i===spec.a);
+			var all=wrap.querySelectorAll(".opt");
+			if(right){
+				settled=true;
+				for(var k=0;k<all.length;k++)all[k].disabled=true;
+				btn.classList.add("pick-ok");
+				fb.className="fb show ok";
+				fb.innerHTML="<b>"+(tries?"두 번째에 맞혔습니다":"정답입니다")+"</b> "+spec.ok;
+				if(onRight)onRight(true);
+				return;
+			}
+			tries++;
+			btn.classList.add("pick-no");
+			btn.disabled=true;
+			if(tries===1){
+				fb.className="fb show no";
+				fb.innerHTML="<b>다시 한 번</b> 아직 정답이 아닙니다. 오늘 배운 내용을 떠올리며 한 번 더 골라 보세요.";
+			}else{
+				settled=true;
+				for(var k2=0;k2<all.length;k2++)all[k2].disabled=true;
+				all[spec.a].classList.add("pick-ok");
+				fb.className="fb show no";
+				fb.innerHTML="<b>정답을 확인해 보세요</b> "+spec.no;
+				if(onRight)onRight(false);
+			}
+		});
+		wrap.appendChild(btn);
+	});
+	return b;
+}
+function ctlRow(parent,label,min,max,step,val,fmt,onIn){
+	var row=el("div","ctl");
+	var id="c"+Math.floor(val*1e6)+label.length+parent.children.length;
+	var lab=el("label",null,label);lab.setAttribute("for",id);
+	var inp=document.createElement("input");inp.type="range";inp.id=id;inp.min=min;inp.max=max;inp.step=step;inp.value=val;
+	var out=el("output",null,fmt(val));
+	inp.addEventListener("input",function(){out.textContent=fmt(+inp.value);onIn(+inp.value);});
+	row.appendChild(lab);row.appendChild(inp);row.appendChild(out);parent.appendChild(row);
+	return inp;
+}
+function metric(k,v,cls){var m=el("div","metric"+(cls?" "+cls:""));m.appendChild(el("div","k",k));var vv=el("div","v",v);m.appendChild(vv);m.val=vv;return m;}
+function pixgrid(size,cell,ro){
+	var g=el("div","pix"+(ro?" ro":""));g.style.gridTemplateColumns="repeat("+size+","+cell+"px)";
+	g.cells=[];
+	for(var i=0;i<size*size;i++){var c=el("div","px");c.style.width=cell+"px";c.style.height=cell+"px";g.appendChild(c);g.cells.push(c);}
+	return g;
+}
+function paintable(g,size,onChange){
+	var down=false;
+	function set(t,on){var i=g.cells.indexOf(t);if(i<0)return;g.cells[i].classList.toggle("on",on);onChange();}
+	g.addEventListener("pointerdown",function(e){down=true;g.setPointerCapture(e.pointerId);var t=e.target;set(t,!t.classList.contains("on"));});
+	g.addEventListener("pointermove",function(e){if(!down)return;var t=document.elementFromPoint(e.clientX,e.clientY);if(t&&t.classList.contains("px"))set(t,true);});
+	window.addEventListener("pointerup",function(){down=false;});
+}
+function gridVals(g){return g.cells.map(function(c){return c.classList.contains("on")?1:0;});}
+function setGrid(g,arr){g.cells.forEach(function(c,i){c.classList.toggle("on",!!arr[i]);});}
+
+/* ---------- 수업 노트 ---------- */
+var NOTES={
+1:{c:[
+	{t:"인공지능",e:"artificial intelligence",d:"사람이 하던 판단이나 작업을 기계가 대신하게 만든 기술.",s:"사람처럼 생각하는 기계가 아닙니다. 사람 일의 일부를 대신합니다."},
+	{t:"알고리즘",e:"algorithm",d:"문제를 푸는 정해진 절차.",s:"요리법과 같습니다. 순서대로 따라 하면 같은 결과가 나옵니다."},
+	{t:"데이터",e:"data",d:"판단의 재료가 되는 기록.",s:"AI는 데이터 안에서만 배웁니다."},
+	{t:"자동화",e:"automation",d:"반복되는 절차를 기계가 대신 수행하는 것.",s:"판단이 필요 없는 일일수록 자동화가 쉽습니다."},
+	{t:"과업 분해",e:"task decomposition",d:"전체 일을 작은 부분과 단계로 나누는 것.",s:"‘마케팅’을 후기 분류·문구·예산으로 나눕니다."},
+	{t:"위임 판단",e:"delegation",d:"어느 부분을 맡기고 어느 부분을 사람이 할지 정하는 것.",s:"반복은 맡기고, 책임지는 결정은 사람이 합니다."}],
+	sa:["사람 일의 일부를 대신하도록 만든 기술을 무엇이라 하는가?",
+		"전체 일을 작은 부분과 단계로 나누어 보는 것을 무엇이라 하는가?",
+		"문제를 푸는 정해진 절차를 무엇이라 하는가?"],
+	q:"편의점에서 하루에 하는 일을 네 가지로 나누고, 그중 AI에게 맡길 수 있는 것과 사람이 해야 하는 것을 갈라 쓰시오."},
+
+2:{c:[
+	{t:"규칙기반",e:"rule-based",d:"사람이 조건과 결과를 직접 적어 두는 방법.",s:"규칙에 없는 표현이 오면 아무 답도 못 합니다."},
+	{t:"전문가 시스템",e:"expert system",d:"전문가의 규칙을 모아 만든 초기 인공지능.",s:"규칙이 많아질수록 서로 부딪혀서 관리가 어려워졌습니다."},
+	{t:"학습기반",e:"learning-based",d:"사람은 정답만 표시하고, 규칙은 모델이 데이터에서 찾는 방법.",s:"정답을 붙여 학습시키므로 지도학습에 해당합니다."},
+	{t:"거짓 양성",e:"false positive",d:"아닌 것을 맞다고 판정하는 오류.",s:"정상 문자를 광고로 막는 경우입니다. 오탐이라고도 합니다."},
+	{t:"거짓 음성",e:"false negative",d:"맞는 것을 아니라고 판정하는 오류.",s:"광고를 정상으로 통과시키는 경우입니다. 미탐이라고도 합니다."},
+	{t:"일반화",e:"generalization",d:"배운 적 없는 새 입력도 처리해 내는 능력.",s:"학습기반이 규칙기반보다 나은 점이 바로 이것입니다."}],
+	sa:["사람이 조건과 결과를 직접 적어 두는 방식을 무엇이라 하는가?",
+		"정상 문자를 광고로 잘못 막는 오류를 무엇이라 하는가?",
+		"배운 적 없는 새 입력도 처리해 내는 능력을 무엇이라 하는가?"],
+	q:"학교 게시판에서 욕설을 거르는 규칙을 만들 때 생기는 두 가지 오류를 예를 들어 쓰시오."},
+
+3:{c:[
+	{t:"머신러닝",e:"machine learning",d:"예시 데이터에서 패턴을 학습해 새로운 입력에 대한 예측이나 분류를 수행하는 방법.",s:"예시를 보여 주고 학습시킨 뒤, 새로운 예시에서 잘 작동하는지 확인합니다."},
+	{t:"학습 데이터",e:"training data",d:"모델의 패턴을 학습시키는 데 사용하는 예시 데이터.",s:"어떤 예시를 보여 주었는지가 모델이 배우는 내용에 영향을 줍니다."},
+	{t:"지도학습",e:"supervised learning",d:"각 예시에 정답 또는 클래스가 붙어 있는 데이터로 학습하는 방법.",s:"‘컵’과 ‘펜’처럼 예시에 정답을 붙여 모델이 분류 패턴을 학습하게 합니다."},
+	{t:"비지도학습",e:"unsupervised learning",d:"정답 없이 비슷한 것끼리 묶는 방법.",s:"고객을 몇 개 무리로 나눌 때 씁니다."},
+	{t:"강화학습",e:"reinforcement learning",d:"보상과 벌을 받으며 행동을 고쳐 가는 방법.",s:"알파고와 로봇 제어가 이 방식입니다."},
+	{t:"편향",e:"bias",d:"자료가 치우쳐서 판단도 함께 치우치는 것.",s:"전체 정확도만 보면 이 문제가 가려집니다."}],
+	sa:["정답을 붙여 둔 예시로 배우는 방법을 무엇이라 하는가?",
+		"학습 데이터가 한쪽으로 치우쳐 판단도 함께 치우치는 것을 무엇이라 하는가?",
+		"보상과 벌을 받으며 행동을 고쳐 가는 학습 방법을 무엇이라 하는가?"],
+	q:"은행이 대출 심사 AI를 만들면서 한 지역 데이터만 모았다. 어떤 일이 생길지 쓰고, 어떻게 하면 막을 수 있을지 쓰시오."},
+
+4:{c:[
+	{t:"인공 뉴런",e:"artificial neuron",d:"입력에 가중치를 곱해 더한 값이 임계값을 넘는지 보는 계산.",s:"이 합을 가중합이라 합니다. 가장 단순한 형태가 퍼셉트론입니다."},
+	{t:"가중치",e:"weight",d:"각 입력을 얼마나 중요하게 볼지 정하는 값.",s:"가중치가 클수록 그 입력이 결과를 크게 좌우합니다."},
+	{t:"임계값",e:"threshold",d:"넘으면 ‘예’, 못 넘으면 ‘아니오’가 되는 경계값.",s:"임계값을 옮기면 판정 선 전체가 밀려납니다."},
+	{t:"오차",e:"error, loss",d:"모델의 예측과 정답 사이의 차이.",s:"손실(loss)이라고도 합니다."},
+	{t:"학습",e:"training",d:"오차를 줄이는 방향으로 가중치를 반복해 조정하는 것.",s:"이 방법을 경사하강법(gradient descent)이라고 합니다."},
+	{t:"딥러닝",e:"deep learning",d:"인공 뉴런을 여러 층으로 쌓은 것.",s:"잘 맞히는 대신 판단 경로를 따라가기 어려워집니다."}],
+	sa:["각 입력을 얼마나 중요하게 볼지 정하는 숫자를 무엇이라 하는가?",
+		"인공 뉴런을 여러 층으로 쌓은 구조를 무엇이라 하는가?",
+		"넘으면 판정이 바뀌는 경계값을 무엇이라 하는가?"],
+	q:"학습 속도를 아주 크게 했더니 기계가 답을 찾지 못했다. 왜 그런지 설명하고, 어떻게 고쳐야 할지 쓰시오."},
+
+5:{c:[
+	{t:"패턴 인식",e:"pattern recognition",d:"그림·소리·문서에서 반복되는 형태를 찾아 알아보는 일.",s:"사람 얼굴을 알아보는 것도 같은 원리입니다."},
+	{t:"특징",e:"feature",d:"모델이 먼저 찾아내는 단서. 선, 모서리, 밝기가 바뀌는 자리.",s:"그림을 통째로 외우지 않고 특징부터 잡습니다."},
+	{t:"필터",e:"filter, kernel",d:"특정 방향의 선을 찾으려고 이미지 위를 훑는 작은 창.",s:"이 계산을 합성곱(convolution)이라고 합니다."},
+	{t:"합성곱 신경망",e:"CNN",d:"필터를 여러 층으로 쌓아 이미지를 알아보는 신경망.",s:"1층은 선, 2층은 부품, 3층은 얼굴을 잡습니다."},
+	{t:"이동 불변성",e:"translation invariance",d:"위치가 바뀌어도 같은 것으로 알아보는 성질.",s:"이것이 약하면 조금만 밀려도 못 알아봅니다."},
+	{t:"멀티모달",e:"multimodal",d:"글·그림·소리를 같은 숫자로 바꾸어 서로 잇는 방식.",s:"둘 다 숫자가 되어야 비교할 수 있습니다."}],
+	sa:["모델이 이미지에서 먼저 찾아내는 단서를 무엇이라 하는가?",
+		"글과 그림을 같은 숫자로 바꾸어 잇는 방식을 무엇이라 하는가?",
+		"필터를 여러 층으로 쌓아 이미지를 알아보는 신경망을 무엇이라 하는가?"],
+	q:"주차장 번호판 인식기가 비 오는 밤에 자주 실패한다. 오늘 배운 개념으로 그 까닭을 설명하시오."},
+
+6:{c:[
+	{t:"생성형 AI",e:"generative AI",d:"글·그림·소리를 새로 만들어 내는 인공지능.",s:"사실 창고가 아니라 이어 붙이는 기계입니다."},
+	{t:"대규모 언어모델",e:"LLM, large language model",d:"방대한 글로 학습해 문장을 만들어 내는 모델.",s:"ChatGPT와 Claude가 여기에 속합니다."},
+	{t:"토큰",e:"token",d:"모델이 다루는 글의 최소 단위.",s:"단어 하나가 여러 토큰으로 쪼개지기도 합니다."},
+	{t:"다음 단어 예측",e:"next-word prediction",d:"지금까지의 말 뒤에 올 단어의 확률을 계산해 고르는 일.",s:"이해가 아니라 통계로 이어 붙이는 것입니다."},
+	{t:"온도",e:"temperature",d:"확률이 낮은 단어도 얼마나 뽑을지 정하는 값.",s:"확률에 따라 하나를 고르는 일을 샘플링(sampling)이라고 합니다."},
+	{t:"환각",e:"hallucination",d:"사실이 아닌 내용을 사실처럼 말하는 것.",s:"‘지어낸다’고도 합니다. 사실을 확인하는 단계가 구조 안에 없어서 생깁니다."}],
+	sa:["사실이 아닌 내용을 사실처럼 말하는 현상을 무엇이라 하는가?",
+		"확률이 낮은 단어도 얼마나 뽑을지 정하는 값을 무엇이라 하는가?",
+		"방대한 글로 학습해 문장을 만들어 내는 모델을 무엇이라 하는가?"],
+	q:"AI가 알려 준 통계 숫자를 보고서에 쓰려고 한다. 쓰기 전에 무엇을 해야 하는지와 그 까닭을 쓰시오."},
+
+7:{c:[
+	{t:"규칙기반",e:"rule-based",d:"사람이 규칙을 직접 적는 방식.",s:"정확하지만 예외에 무너집니다."},
+	{t:"학습기반",e:"learning-based",d:"기계가 자료에서 규칙을 찾는 방식.",s:"오늘날 AI는 대부분 이쪽입니다."},
+	{t:"편향",e:"bias",d:"자료가 치우쳐 판단도 치우치는 것.",s:"나누어 봐야 드러납니다."},
+	{t:"특징",e:"feature",d:"기계가 판단에 쓰는 단서.",s:"사람이 보는 것과 다를 수 있습니다."},
+	{t:"다음 단어 예측",e:"next-word prediction",d:"생성형 AI가 문장을 만드는 방식.",s:"그래서 자신 있게 틀립니다."},
+	{t:"검증",e:"verification",d:"결과의 근거를 원자료와 대조하는 일.",s:"이 수업의 매주 마무리 질문입니다."}],
+	sa:["오늘날 AI가 대부분 쓰는 방식은 규칙기반인가 학습기반인가?",
+		"결과의 근거를 원자료와 대조하는 일을 무엇이라 하는가?",
+		"학습 데이터가 치우쳐 판단도 치우치는 것을 무엇이라 하는가?"],
+	q:"규칙기반과 학습기반의 차이를 스팸 문자 거르기를 예로 들어 설명하시오."},
+
+9:{c:[
+	{t:"프롬프트",e:"prompt",d:"AI에게 무엇을 해 달라고 적어 보내는 글.",s:"질문이 아니라 작업 지시서에 가깝습니다."},
+	{t:"명세",e:"specification",d:"산출물·형식·독자·성공기준을 적은 요청서.",s:"네 칸 중 하나만 비어도 AI가 마음대로 채웁니다."},
+	{t:"맥락",e:"context",d:"AI가 알지 못하는 우리 쪽 정보.",s:"주지 않으면 일반적인 이야기로 빈칸을 메웁니다."},
+	{t:"제약",e:"constraint",d:"하지 말아야 할 것을 미리 정해 함께 넘기는 것.",s:"제약이 없는 명세는 명세가 아닙니다."},
+	{t:"역할 부여",e:"role prompting",d:"AI에게 어떤 입장에서 답할지 정해 주는 것.",s:"‘신입생에게 설명하듯’처럼 독자를 정해 줍니다."},
+	{t:"예시 제시",e:"few-shot prompting",d:"원하는 형태를 예시로 두어 개 보여 주는 것.",s:"말로 설명하기 어려운 형식일 때 효과가 큽니다."}],
+	sa:["산출물·형식·독자·성공기준을 적은 요청서를 무엇이라 하는가?",
+		"하지 말아야 할 것을 미리 정해 넘기는 것을 무엇이라 하는가?",
+		"AI가 알지 못하는 우리 쪽 정보를 함께 넘기는 것을 무엇이라 하는가?"],
+	q:"동아리 모집 글을 AI에게 부탁하려 한다. 명세 네 칸(산출물·형식·독자·성공기준)을 채워 쓰시오."},
+
+10:{c:[
+	{t:"에이전트형 AI",e:"agentic AI",d:"목표를 받아 스스로 단계를 나누고 도구를 쓰는 AI.",s:"한 번 묻고 답하는 것을 넘어 일을 진행합니다."},
+	{t:"목표 분해",e:"goal decomposition",d:"하나의 목표를 순서가 있는 작은 작업으로 나누는 것.",s:"목표를 그대로 던지면 결과가 흩어집니다."},
+	{t:"도구 사용",e:"tool use",d:"검색·계산·문서 작성 도구를 AI가 불러 쓰는 것.",s:"모델이 못 하는 일을 도구가 대신합니다."},
+	{t:"오케스트레이션",e:"orchestration",d:"여러 작업과 도구의 순서·확인 지점을 설계하는 일.",s:"도구를 많이 쓰는 것이 아니라 순서를 정하는 것입니다."},
+	{t:"중간 확인",e:"intermediate check",d:"다음 단계로 넘기기 전에 결과가 맞는지 확인하는 절차.",s:"확인이 늦으면 잘못이 뒤 단계까지 그대로 갑니다."},
+	{t:"파이프라인",e:"pipeline",d:"앞 단계의 결과가 다음 단계의 입력이 되는 흐름.",s:"한 곳이 틀리면 뒤가 모두 틀립니다."}],
+	sa:["목표를 순서가 있는 작은 작업으로 나누는 것을 무엇이라 하는가?",
+		"다음 단계로 넘기기 전에 결과가 맞는지 확인하는 절차를 무엇이라 하는가?",
+		"여러 작업과 도구의 순서·확인 지점을 설계하는 일을 무엇이라 하는가?"],
+	q:"보고서 한 편을 쓰는 일을 네 단계로 나누고, 중간 확인을 어느 단계에 둘지와 그 까닭을 쓰시오."},
+
+11:{c:[
+	{t:"확률적 생성",e:"stochastic generation",d:"같은 요청에도 매번 다른 결과가 나오는 성질.",s:"고장이 아니라 원래 그렇게 만들어졌습니다."},
+	{t:"일관성",e:"consistency",d:"여러 번 만든 결과가 한 방향으로 모이는 것.",s:"재능이 아니라 절차에서 나옵니다."},
+	{t:"재현성",e:"reproducibility",d:"같은 조건에서 같은 결과를 다시 얻을 수 있는 성질.",s:"생성형 AI는 같은 입력에서도 결과가 달라질 수 있어, <b>조건을 통제한 재현성</b>이 전통적 결정적 프로그램보다 다를 수 있습니다."},
+	{t:"검증",e:"verification",d:"결과에 들어간 사실이 확인된 것인지 대조하는 일.",s:"숫자와 연도가 가장 위험합니다."},
+	{t:"허위 생성",e:"fabrication",d:"없는 사실을 만들어 내는 것. 부풀려 말하는 과장과 구분됩니다.",s:"홍보에 과장은 있을 수 있지만 허위는 다른 문제입니다."},
+	{t:"AI 생성 표시",e:"AI disclosure",d:"AI로 만든 결과물임을 밝히는 것.",s:"사람이 고친 곳을 표시하면 책임 소재가 분명해집니다."}],
+	sa:["같은 요청에도 매번 다른 결과가 나오는 성질을 무엇이라 하는가?",
+		"여러 결과가 한 방향으로 모이는 것을 무엇이라 하는가?",
+		"없는 사실을 만들어 내는 것을 무엇이라 하는가?"],
+	q:"AI가 만든 홍보 문구를 그대로 쓰기 전에 확인할 것 세 가지를 쓰고, 각각 왜 확인해야 하는지 쓰시오."},
+
+12:{c:[
+	{t:"설명가능한 AI",e:"XAI",d:"판단 근거를 확인할 수 있게 만드는 방법.",s:"잘 맞히는 것과 납득되는 것은 다릅니다."},
+	{t:"블랙박스",e:"black box",d:"안에서 무슨 일이 일어나는지 보이지 않는 상태.",s:"층이 깊어질수록 심해집니다."},
+	{t:"기여도",e:"attribution",d:"각 항목이 결과를 얼마나 밀었는지 나타낸 값.",s:"같은 판정도 무엇이 밀었는지는 따로 봐야 압니다."},
+	{t:"사후 설명",e:"post-hoc explanation",d:"판단이 끝난 뒤에 이유를 만들어 붙인 설명.",s:"기록이 아니라 새로 생성된 문장일 수 있습니다."},
+	{t:"출처 확인",e:"source checking",d:"제시된 출처를 열어 그 내용이 실제로 있는지 맞춰 보는 일.",s:"사실 확인(fact-checking)의 기본 절차입니다."},
+	{t:"고위험 결정",e:"high-stakes decision",d:"사람의 삶에 직접 영향을 주는 결정.",s:"신용·채용·보험·의료가 여기에 속합니다."}],
+	sa:["안에서 무슨 일이 일어나는지 보이지 않는 상태를 무엇이라 하는가?",
+		"제시된 출처를 열어 실제로 있는지 맞춰 보는 일을 무엇이라 하는가?",
+		"각 항목이 결과를 얼마나 밀었는지 나타낸 값을 무엇이라 하는가?"],
+	q:"AI 판정으로 대출이 거절되었다. 은행에 요구할 수 있는 것을 세 가지 쓰고 그 까닭을 쓰시오."},
+
+13:{c:[
+	{t:"인지적 오프로딩",e:"cognitive offloading",d:"기억이나 계산을 사람 바깥에 맡기는 것.",s:"메모와 계산기도 같은 원리입니다."},
+	{t:"작업기억",e:"working memory",d:"지금 생각하는 동안 잠깐 붙잡아 두는 기억.",s:"맡기면 여기에 여유가 생깁니다."},
+	{t:"메타인지",e:"metacognition",d:"내가 아는지 모르는지를 스스로 아는 능력.",s:"이것이 약하면 모르는 줄도 모릅니다."},
+	{t:"이해의 착각",e:"illusion of comprehension",d:"잘 쓰인 글을 보고 이해했다고 느끼는 것.",s:"읽은 것과 아는 것은 다릅니다."},
+	{t:"위임 기준",e:"delegation criterion",d:"무엇을 맡기고 무엇을 직접 할지 정하는 나만의 선.",s:"틀렸을 때 알아챌 수 있는 일만 맡깁니다."},
+	{t:"비판적 검토",e:"critical review",d:"받은 결과를 그대로 쓰지 않고 따져 보는 일.",s:"반대 의견을 일부러 받아 보는 것도 방법입니다."}],
+	sa:["기억이나 계산을 밖에 맡기는 것을 무엇이라 하는가?",
+		"내가 아는지 모르는지를 스스로 아는 능력을 무엇이라 하는가?",
+		"지금 생각하는 동안 잠깐 붙잡아 두는 기억을 무엇이라 하는가?"],
+	q:"친구가 과제를 전부 AI로 쓴다고 한다. 어떤 점이 문제인지 오늘 배운 개념으로 설명하시오."},
+
+14:{c:[
+	{t:"피지컬 AI",e:"physical AI",d:"화면 밖 물리 세계에서 직접 움직이는 인공지능.",s:"로봇·자율주행·물류 설비가 여기에 속합니다."},
+	{t:"실시간성",e:"real-time",d:"정해진 시간 안에 반드시 반응해야 하는 조건.",s:"화면 안에서는 늦어도 되지만 도로에서는 안 됩니다."},
+	{t:"실패 비용",e:"cost of failure",d:"틀렸을 때 치러야 하는 대가.",s:"물리 세계에서는 사람이 다칠 수 있습니다."},
+	{t:"디지털 트윈",e:"digital twin",d:"현실을 본뜬 모형에서 먼저 실험하는 방식.",s:"데이터가 없으면 모형을 만들 수 없습니다."},
+	{t:"직무 재구성",e:"job restructuring",d:"직업이 사라지는 대신 일 단위로 다시 나뉘는 것.",s:"사라지는 일 옆에 남는 판단이 있습니다."},
+	{t:"책임 소재",e:"accountability",d:"사고가 났을 때 누가 책임지는지 가리는 문제.",s:"사람이 언제 개입하기로 했는지가 출발점입니다."}],
+	sa:["현실을 본뜬 모형에서 먼저 실험하는 방식을 무엇이라 하는가?",
+		"직업이 사라지는 대신 일 단위로 다시 나뉘는 것을 무엇이라 하는가?",
+		"화면 밖 물리 세계에서 직접 움직이는 인공지능을 무엇이라 하는가?"],
+	q:"배달 로봇이 들어오면 배달 기사의 일이 어떻게 다시 나뉠지 쓰고, 사고가 났을 때 책임을 어떻게 따져야 할지 쓰시오."},
+
+15:{c:[
+	{t:"명세",e:"specification",d:"원하는 결과를 네 칸으로 적는 것.",s:"결과 품질의 대부분이 여기서 갈립니다."},
+	{t:"맥락",e:"context",d:"AI가 모르는 정보를 함께 넘기는 것.",s:"주지 않으면 지어냅니다."},
+	{t:"오케스트레이션",e:"orchestration",d:"작업 순서와 확인 지점을 설계하는 일.",s:"도구 개수가 아니라 순서가 결과를 만듭니다."},
+	{t:"설명가능한 AI",e:"XAI",d:"판단 근거를 확인할 수 있게 하는 방법.",s:"고위험 결정일수록 중요합니다."},
+	{t:"인지적 오프로딩",e:"cognitive offloading",d:"기억과 계산을 밖에 맡기는 것.",s:"판단까지 넘기면 문제가 생깁니다."},
+	{t:"검증",e:"verification",d:"결과의 근거를 원자료와 대조하는 일.",s:"이 수업이 남기려는 습관입니다."}],
+	sa:["작업 순서와 확인 지점을 설계하는 일을 무엇이라 하는가?",
+		"기억과 계산을 사람 바깥에 맡기는 것을 무엇이라 하는가?",
+		"판단 근거를 확인할 수 있게 만드는 방법을 무엇이라 하는가?"],
+	q:"AI에게 일을 맡기고 그 결과를 믿을 수 있게 만드는 절차를, 배운 개념을 써서 순서대로 설명하시오."}
+};
+
+function notePage(w){
+	var art=el("article","note-page");
+	var hd=el("div","np-head");
+	hd.appendChild(el("div","np-code","GEA8811 · 인문사회계열을위한인공지능입문"));
+	hd.appendChild(el("div","np-title",(w.n<10?"0":"")+w.n+"주차 · "+w.title));
+	hd.appendChild(el("div","np-id","학과 ____________   학번 ____________   이름 ____________"));
+	art.appendChild(hd);
+
+	var data=NOTES[w.n]||{c:[],sa:[],q:""};
+
+	var s1=el("section","np-sec");
+	s1.appendChild(el("h5",null,"① 오늘의 개념"));
+	var dl=el("div","np-terms");
+	(data.c||[]).forEach(function(c){
+		var box=el("div","np-term");
+		var h=el("div","np-t");
+		h.appendChild(el("b",null,c.t));
+		h.appendChild(el("span","np-en",c.e));
+		box.appendChild(h);
+		box.appendChild(el("div","np-d",c.d));
+		box.appendChild(el("div","np-s",c.s));
+		dl.appendChild(box);
+	});
+	s1.appendChild(dl);
+	art.appendChild(s1);
+
+	var s2=el("section","np-sec");
+	s2.appendChild(el("h5",null,"② 짧게 답하기"));
+	var sl=el("div","np-sas");
+	(data.sa||[]).forEach(function(q,i){
+		var row=el("div","np-sa");
+		row.appendChild(el("span","np-qn",String(i+1)));
+		row.appendChild(el("span","np-sq",q));
+		row.appendChild(el("i"));
+		sl.appendChild(row);
+	});
+	s2.appendChild(sl);
+	art.appendChild(s2);
+
+	var s3=el("section","np-sec");
+	s3.appendChild(el("h5",null,"③ 생각을 펼쳐 쓰기"));
+	var head=el("div","np-qh");
+	head.appendChild(el("span","np-qn","4"));
+	head.appendChild(el("span",null,data.q||""));
+	s3.appendChild(head);
+	for(var k=0;k<4;k++)s3.appendChild(el("div","np-line"));
+	art.appendChild(s3);
+	return art;
+}
+
+function renderNotes(){
+	here={t:"notes",n:0};
+	$("#crumb").textContent="노트";$("#lWk").textContent="";
+	view.innerHTML="";
+	var head=el("header","lhead");
+	head.appendChild(el("div","eyebrow","NOTE"));
+	head.appendChild(el("h2",null,"수업 노트"));
+	head.appendChild(el("p",null,"개념 정의와 문제로 이루어진 한 장짜리 노트입니다. 주차를 고르고 인쇄를 누르면 A4 한 장으로 나옵니다."));
+	view.appendChild(head);
+
+	var pick=el("div","note-tools");
+	var sel=document.createElement("select");
+	sel.className="txtin";sel.style.flex="0 0 190px";
+	var o0=document.createElement("option");o0.value="all";o0.textContent="전체 14개 주차";sel.appendChild(o0);
+	LESSONS.forEach(function(w){
+		var o=document.createElement("option");
+		o.value=String(w.n);o.textContent=(w.n<10?"0":"")+w.n+"주차 · "+w.title;
+		sel.appendChild(o);
+	});
+	var pb=el("button","btn","인쇄하기");
+	pb.addEventListener("click",function(){
+		var embedded=false;
+		try{embedded=(window.self!==window.top);}catch(e){embedded=true;}
+		if(embedded){
+			toast("미리보기 창에서는 인쇄가 막혀 있습니다. 파일을 브라우저에서 직접 열어 주세요.");
+			return;
+		}
+		try{window.print();}catch(e){toast("인쇄 창을 열 수 없습니다. Ctrl+P 를 눌러 주세요.");}
+	});
+	pick.appendChild(sel);pick.appendChild(pb);
+	var hint=el("div","note");
+	hint.style.flex="1 1 100%";
+	hint.textContent="인쇄 창이 열리지 않으면 Ctrl+P (맥은 Cmd+P) 를 누르세요. 인쇄 대화상자에서 ‘PDF로 저장’을 고르면 파일로 받을 수 있습니다.";
+	pick.appendChild(hint);
+	view.appendChild(pick);
+
+	var box=el("div");view.appendChild(box);
+	function draw(){
+		box.innerHTML="";
+		var v=sel.value;
+		LESSONS.forEach(function(w){
+			if(v!=="all"&&String(w.n)!==v)return;
+			box.appendChild(notePage(w));
+		});
+	}
+	sel.addEventListener("change",draw);
+	draw();
+}
+
+/* ---------- 주차 화면 ---------- */
+function renderWeek(n){
+	var w=wk(n);if(!w||w.exam){renderHome();return;}
+	here={t:"week",n:n};
+	$("#crumb").textContent=w.block;
+	$("#lWk").textContent=n+" / 16주";
+	view.innerHTML="";
+	var head=el("header","lhead");
+	head.appendChild(el("div","wkbig",(n<10?"0":"")+n));
+	head.appendChild(el("div","eyebrow",n+"주차 · "+w.block));
+	head.appendChild(el("h2",null,w.title));
+	head.appendChild(el("p",null,w.sub));
+	view.appendChild(head);
+	var goal=el("div","goal");goal.innerHTML="<b>오늘 할 일</b> — "+w.goal;view.appendChild(goal);
+
+	view.appendChild(quizBlock(w.predict,"p","STEP 1","먼저 예측해 보세요"));
+
+	var stage=block("o","STEP 2","직접 해 보세요");
+	view.appendChild(stage);
+	if(STAGES[w.stage])STAGES[w.stage](stage.inner,w);
+	else stage.inner.appendChild(el("p","lead","준비 중입니다."));
+
+	var ob=block("","STEP 3","무엇이 보였나요");
+	var ul=el("ul","list");
+	(w.observe||[]).forEach(function(t){var li=el("li","li");li.appendChild(el("span","dot"));var pp=el("p");pp.innerHTML=t;li.appendChild(pp);ul.appendChild(li);});
+	ob.inner.appendChild(ul);
+	var kl=el("div","keyline");kl.innerHTML="<b>오늘의 핵심</b> "+w.key;ob.inner.appendChild(kl);
+	view.appendChild(ob);
+
+	view.appendChild(quizBlock(w.check,"c","STEP 4","확인 문제",function(right){
+		if(!right)return;
+		markDone(n);
+		var nb=document.querySelector("#view .lnav .btn:last-child");
+		if(nb)nb.classList.add("next-on");
+	}));
+
+	var nav=el("div","lnav");
+	var ix=LNUMS.indexOf(n);
+	var prev=LESSONS[ix-1],next=LESSONS[ix+1];
+	var b1=el("button","btn gray",prev?"← "+prev.n+"주차":"개요로");
+	b1.addEventListener("click",function(){if(prev)openWeek(prev.n);else closeWeek();});nav.appendChild(b1);
+	var b2=el("button","btn",next?next.n+"주차 →":"개요로 돌아가기");
+	b2.addEventListener("click",function(){if(next)openWeek(next.n);else closeWeek();});nav.appendChild(b2);
+	view.appendChild(nav);
+}
+
+/* ================= 1주차 · 일을 부분으로 나누기 ================= */
+STAGES.taskmap=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="아래는 회사에서 흔히 하는 일입니다. 각각을 <b>누가 하면 좋을지</b> 골라 보세요. 다 고른 뒤 채점 단추를 누르세요.";
+	root.appendChild(lead);
+	var LBL=["AI가 한다","사람이 한다","같이 한다"];
+	var TASKS=[
+		{t:"고객 후기 5,000건을 좋음과 나쁨으로 나누기",a:0,why:"같은 일이 아주 많이 반복됩니다. 사례도 많이 쌓여 있습니다. AI가 가장 잘하는 종류입니다."},
+		{t:"이번 분기 광고비를 얼마로 할지 정하기",a:1,why:"돈을 쓰는 결정입니다. 결과에 책임이 따르므로 사람이 정해야 합니다."},
+		{t:"영어 시장 보고서 30쪽을 한국어로 요약하기",a:0,why:"글을 읽고 줄이는 일입니다. AI가 빠르고 정확한 편입니다. 다만 숫자는 확인해야 합니다."},
+		{t:"회사 소개 글 초안을 쓰고 사실을 확인하기",a:2,why:"초안은 AI가 빨리 씁니다. 사실이 맞는지 확인하는 일은 사람이 해야 합니다."},
+		{t:"지원자 중에서 최종 합격자 정하기",a:1,why:"한 사람의 삶에 영향을 주는 결정입니다. 사람이 판단하고 책임져야 합니다."},
+		{t:"가게 소개 문구 3개를 만들고 그중 하나 고르기",a:2,why:"여러 개를 만드는 일은 AI가 잘합니다. 어느 것이 우리와 맞는지는 사람이 고릅니다."}
+	];
+	var picks=[];
+	TASKS.forEach(function(task,i){
+		var card=el("div","taskcard");
+		card.appendChild(el("div","tt",(i+1)+". "+task.t));
+		var row=el("div","picks");
+		LBL.forEach(function(l,j){
+			var b=el("button","pick",l);
+			b.addEventListener("click",function(){
+				if(card.locked)return;
+				picks[i]=j;
+				var bs=row.querySelectorAll(".pick");
+				for(var k=0;k<bs.length;k++)bs[k].classList.remove("sel");
+				b.classList.add("sel");
+			});
+			row.appendChild(b);
+		});
+		card.appendChild(row);
+		var why=el("div","why",task.why);
+		card.appendChild(why);
+		card.row=row;card.why=why;task.card=card;
+		root.appendChild(card);
+	});
+	var res=el("div","fb");root.appendChild(res);
+	var br=el("div","btnrow");
+	var go=el("button","btn","채점하기");
+	var again=el("button","btn gray","다시 풀기");
+	br.appendChild(go);br.appendChild(again);root.appendChild(br);
+	var graded=0;
+	go.addEventListener("click",function(){
+		for(var i=0;i<TASKS.length;i++){if(picks[i]==null){toast((i+1)+"번을 아직 안 골랐습니다");return;}}
+		graded++;
+		var n=0;
+		TASKS.forEach(function(task,i){
+			var bs=task.card.row.querySelectorAll(".pick");
+			var ok=(picks[i]===task.a);
+			if(ok)n++;
+			if(graded===1&&n>=0&&!allRight()){
+				for(var k=0;k<bs.length;k++){bs[k].classList.remove("wrong");bs[k].classList.remove("right");}
+				if(!ok)bs[picks[i]].classList.add("wrong");
+				task.card.style.borderColor=ok?cv("--ok"):cv("--sig");
+			}else{
+				for(var k2=0;k2<bs.length;k2++)bs[k2].classList.remove("sel");
+				bs[task.a].classList.add("right");
+				if(!ok)bs[picks[i]].classList.add("wrong");
+				task.card.why.classList.add("show");
+				task.card.locked=true;
+			}
+		});
+		if(graded===1&&n<TASKS.length){
+			res.className="fb show no";
+			res.innerHTML="<b>"+n+" / 6</b> 빨갛게 표시된 것이 틀린 답입니다. 정답은 아직 보여 드리지 않았습니다. 다시 골라 보고 채점을 한 번 더 누르세요.";
+			go.textContent="다시 채점하기";
+		}else{
+			res.className="fb show "+(n>=5?"ok":"no");
+			res.innerHTML="<b>"+n+" / 6 정답</b> 정답을 보면 규칙이 하나 보입니다. <b>반복이 많은 일</b>은 AI가, <b>책임이 따르는 결정</b>은 사람이 합니다. 그 사이에 있는 일은 같이 합니다.";
+			go.disabled=true;
+		}
+	});
+	function allRight(){
+		for(var i=0;i<TASKS.length;i++)if(picks[i]!==TASKS[i].a)return false;
+		return true;
+	}
+	again.addEventListener("click",function(){
+		picks=[];res.className="fb";graded=0;go.disabled=false;go.textContent="채점하기";
+		TASKS.forEach(function(task){
+			var bs=task.card.row.querySelectorAll(".pick");
+			for(var k=0;k<bs.length;k++)bs[k].className="pick";
+			task.card.style.borderColor="";
+			task.card.why.classList.remove("show");task.card.locked=false;
+		});
+	});
+};
+
+/* ================= 2주차 · 스팸 문자 걸러내기 ================= */
+STAGES.rulebot=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="문자 12건이 왔습니다. 광고 문자만 걸러내는 일을 <b>두 가지 방법</b>으로 해 봅니다. 하나는 내가 규칙을 쓰는 방법, 다른 하나는 기계에게 배우게 하는 방법입니다.";
+	root.appendChild(lead);
+
+	var MSG=[
+		{t:"[Web발신] 무료 이벤트 당첨! 지금 확인하세요",s:1},
+		{t:"택배 무료 배송 안내입니다 오늘 출발합니다",s:0},
+		{t:"대 출 상 담 100% 승인 문의주세요",s:1},
+		{t:"내일 회의 자료 확인 부탁드립니다",s:0},
+		{t:"★★ 초특가 할인 이벤트 클릭 ★★",s:1},
+		{t:"동아리 모임 이번 주 금요일 저녁입니다",s:0},
+		{t:"고수익 알바 하루 30만원 보장 연락주세요",s:1},
+		{t:"주문하신 상품이 배송 시작되었습니다",s:0},
+		{t:"회원님 포인트 소멸 예정 지금 확인",s:1},
+		{t:"교수님 과제 제출 기한 문의드립니다",s:0},
+		{t:"무료 체험 신청하고 경품 받아가세요",s:1},
+		{t:"카드 승인 12,000원 결제 완료",s:0}
+	];
+	var NEW=[
+		{t:"회원님 지금 무료 이벤트 확인하세요 경품 당첨 기회입니다",s:1},
+		{t:"택배 배송 안내입니다 오늘 도착 예정입니다",s:0},
+		{t:"이번 주 초특가 할인 이벤트 지금 클릭",s:1},
+		{t:"내일 회의 자료 미리 확인 부탁드립니다",s:0}
+	];
+	var BAN=["무료","당첨"];
+	var label=new Array(MSG.length).fill(null);
+	var model=null;
+
+	function words(t){
+		return t.replace(/[^가-힣0-9a-zA-Z ]/g," ").split(/\s+/).filter(function(w){return w.length>=2&&!/^[0-9]+$/.test(w);});
+	}
+	function byRule(t){
+		for(var i=0;i<BAN.length;i++)if(BAN[i]&&t.indexOf(BAN[i])>=0)return BAN[i];
+		return null;
+	}
+
+	/* ---------- 방법 1 ---------- */
+	var h1=el("div","bh");
+	h1.appendChild(el("span","tag","방법 1"));h1.appendChild(el("h3",null,"내가 규칙 쓰기"));
+	root.appendChild(h1);
+	var _h1=el("p","lead");
+	_h1.innerHTML="막고 싶은 단어를 적습니다. 그 단어가 들어 있으면 광고로 봅니다. 지금 규칙은 <b>‘무료’</b>와 <b>‘당첨’</b>입니다.";
+	root.appendChild(_h1);
+	var bbox=el("div");root.appendChild(bbox);
+	var brow=el("div","btnrow");
+	var bin=document.createElement("input");
+	bin.className="txtin";bin.placeholder="막을 단어 (예: 이벤트)";bin.style.flex="1 1 170px";
+	var badd=el("button","btn tint","단어 추가");
+	var brun=el("button","btn","규칙으로 걸러 보기");
+	brow.appendChild(bin);brow.appendChild(badd);brow.appendChild(brun);root.appendChild(brow);
+	badd.addEventListener("click",function(){
+		var w=bin.value.trim();
+		if(!w){toast("단어를 적어 주세요");return;}
+		if(BAN.indexOf(w)<0)BAN.push(w);
+		bin.value="";drawBan();
+	});
+	bin.addEventListener("keydown",function(e){if(e.key==="Enter")badd.click();});
+	function drawBan(){
+		bbox.innerHTML="";
+		bbox.appendChild(el("div","note","막을 단어 "+BAN.length+"개 · 단어를 누르면 지웁니다"));
+		var ch=el("div","chips");
+		BAN.forEach(function(w,i){
+			var b=el("button","chip",w+"  ✕");
+			b.addEventListener("click",function(){BAN.splice(i,1);drawBan();});
+			ch.appendChild(b);
+		});
+		bbox.appendChild(ch);
+	}
+	var rrow=el("div","metrics");
+	var mBlock=metric("막은 광고","–"),mWrong=metric("잘못 막은 문자","–");
+	rrow.appendChild(mBlock);rrow.appendChild(mWrong);root.appendChild(rrow);
+	var rnote=el("div","fb");root.appendChild(rnote);
+	brun.addEventListener("click",function(){
+		var caught=0,wrong=0,missed=[],over=[];
+		MSG.forEach(function(m){
+			var hit=byRule(m.t);m.rule=hit;
+			if(m.s===1&&hit)caught++;
+			if(m.s===1&&!hit)missed.push(m.t);
+			if(m.s===0&&hit){wrong++;over.push(m.t+" (‘"+hit+"’ 때문)");}
+		});
+		mBlock.val.textContent=caught+" / 6";mWrong.val.textContent=wrong+" / 6";
+		mBlock.className="metric"+(caught>=5?" win":caught<=3?" bad":"");
+		mWrong.className="metric"+(wrong===0?" win":" bad");
+		var txt="";
+		if(missed.length)txt+="<b>못 막은 광고 "+missed.length+"건</b><br>"+missed.map(function(x){return "· "+x;}).join("<br>")+"<br><br>";
+		if(over.length)txt+="<b>잘못 막은 문자 "+over.length+"건</b><br>"+over.map(function(x){return "· "+x;}).join("<br>")+"<br><br>";
+		if(!missed.length&&!wrong)txt="<b>12건을 모두 맞게 처리했습니다.</b> 그런데 새로운 광고 문자가 오면 어떻게 될까요? 아래에서 확인해 보세요.";
+		else txt+="단어를 더 넣어 광고를 다 막아 보세요. 넣다 보면 <b>정상 문자까지 막히기 시작합니다</b>. 이것이 규칙기반의 한계입니다.";
+		rnote.className="fb show "+(!missed.length&&!wrong?"ok":"no");
+		rnote.innerHTML=txt;
+		drawList();
+	});
+
+	/* ---------- 문자 목록 ---------- */
+	var h2=el("div","bh");h2.style.marginTop="20px";
+	h2.appendChild(el("span","tag o","문자 12건"));h2.appendChild(el("h3",null,"광고인지 아닌지 표시하기"));
+	root.appendChild(h2);
+	var _h2=el("p","lead");
+	_h2.innerHTML="방법 2는 규칙을 쓰지 않습니다. 대신 <b>이건 광고, 이건 정상</b>이라고 표시만 해 주면 됩니다.";
+	root.appendChild(_h2);
+	var listBox=el("div");root.appendChild(listBox);
+	var arow=el("div","btnrow");
+	var autoB=el("button","btn gray","표시 한꺼번에 하기");
+	var clrB=el("button","btn gray","표시 지우기");
+	arow.appendChild(autoB);arow.appendChild(clrB);root.appendChild(arow);
+	autoB.addEventListener("click",function(){MSG.forEach(function(m,i){label[i]=m.s;});drawList();});
+	clrB.addEventListener("click",function(){label=new Array(MSG.length).fill(null);model=null;afterChange();});
+	function drawList(){
+		listBox.innerHTML="";
+		MSG.forEach(function(m,i){
+			var card=el("div","taskcard");
+			card.appendChild(el("div","tt",m.t));
+			var row=el("div","picks");
+			["광고","정상"].forEach(function(t,j){
+				var v=j===0?1:0;
+				var b=el("button","pick"+(label[i]===v?" sel":""),t);
+				b.addEventListener("click",function(){label[i]=v;model=null;afterChange();});
+				row.appendChild(b);
+			});
+			card.appendChild(row);
+			var lines=[];
+			if(m.rule!==undefined){
+				var ok=(m.rule?1:0)===m.s;
+				lines.push("<b>규칙</b> "+(m.rule?"‘"+m.rule+"’ 때문에 막힘":"통과")+" — "+(ok?"맞음":(m.s===1?"<span style='color:"+cv("--sig-ink")+"'>광고를 놓쳤습니다</span>":"<span style='color:"+cv("--sig-ink")+"'>정상 문자를 막았습니다</span>")));
+			}
+			if(m.mach!==undefined){
+				var ok2=m.mach===m.s;
+				lines.push("<b>기계</b> "+(m.mach===1?"광고로 봄":"정상으로 봄")+" — "+(ok2?"맞음":"<span style='color:"+cv("--sig-ink")+"'>틀림</span>"));
+			}
+			if(lines.length){
+				var w=el("div","why show");w.innerHTML=lines.join("<br>");
+				card.appendChild(w);
+				var bad=(m.rule!==undefined&&(m.rule?1:0)!==m.s)||(m.mach!==undefined&&m.mach!==m.s);
+				card.style.borderColor=bad?cv("--sig"):cv("--ok");
+			}
+			listBox.appendChild(card);
+		});
+	}
+
+	/* ---------- 방법 2 ---------- */
+	var h3=el("div","bh");h3.style.marginTop="20px";
+	h3.appendChild(el("span","tag","방법 2"));h3.appendChild(el("h3",null,"기계에게 배우게 하기"));
+	root.appendChild(h3);
+	var trow=el("div","btnrow");
+	var trainB=el("button","btn","내가 한 표시로 학습시키기");
+	trow.appendChild(trainB);root.appendChild(trow);
+	var wordBox=el("div");wordBox.style.marginTop="12px";root.appendChild(wordBox);
+	var testBox=el("div");testBox.style.marginTop="14px";root.appendChild(testBox);
+	var mrow=el("div","metrics");
+	var mNew=metric("새 문자 맞힘","–");
+	mrow.appendChild(mNew);root.appendChild(mrow);
+
+	function train(){
+		var spam={},ham={},ns=0,nh=0,vocab={},used=0;
+		MSG.forEach(function(m,i){
+			if(label[i]===null)return;
+			used++;
+			words(m.t).forEach(function(w){
+				vocab[w]=1;
+				if(label[i]===1){spam[w]=(spam[w]||0)+1;ns++;}
+				else{ham[w]=(ham[w]||0)+1;nh++;}
+			});
+		});
+		if(used<8)return null;
+		var V=Object.keys(vocab).length,sc={};
+		Object.keys(vocab).forEach(function(w){
+			sc[w]=Math.log((((spam[w]||0)+1)/(ns+V))/((((ham[w]||0)+1))/(nh+V)));
+		});
+		return {sc:sc,used:used,V:V};
+	}
+	function machJudge(t,skip){
+		if(!model)return null;
+		var all=[],s=0;
+		words(t).forEach(function(w){
+			var v=model.sc[w];
+			var known=(v!==undefined);
+			var off=skip&&skip[w];
+			all.push({w:w,v:known?v:0,known:known,off:!!off});
+			if(known&&!off)s+=v;
+		});
+		return {y:s>0?1:0,s:s,all:all};
+	}
+	trainB.addEventListener("click",function(){
+		model=train();
+		if(!model){toast("문자 8건 이상에 표시해 주세요");return;}
+		MSG.forEach(function(m){m.mach=machJudge(m.t).y;});
+		drawList();
+
+		wordBox.innerHTML="";
+		var wh=el("div","note");
+		wh.innerHTML="<b>기계가 만든 단어 점수</b> — 내가 규칙을 쓴 적이 없습니다. 표시만 보고 스스로 센 것입니다.";
+		wordBox.appendChild(wh);
+		var arr=Object.keys(model.sc).map(function(w){return {w:w,v:model.sc[w]};});
+		var sp=arr.filter(function(a){return a.v>0;}).sort(function(a,b){return b.v-a.v;}).slice(0,6);
+		var hm=arr.filter(function(a){return a.v<0;}).sort(function(a,b){return a.v-b.v;}).slice(0,6);
+		var grid=el("div");grid.style.display="grid";grid.style.gridTemplateColumns="1fr 1fr";grid.style.gap="12px";grid.style.marginTop="8px";
+		[["광고 쪽 단어",sp,cv("--sig")],["정상 쪽 단어",hm,cv("--ok")]].forEach(function(gp){
+			var col=el("div");
+			col.appendChild(el("div","note",gp[0]));
+			var ch=el("div","chips");ch.style.marginTop="5px";
+			gp[1].forEach(function(a){
+				var b=el("button","chip",a.w);
+				b.style.borderColor=gp[2];b.style.color=gp[2];b.style.cursor="default";
+				ch.appendChild(b);
+			});
+			col.appendChild(ch);grid.appendChild(col);
+		});
+		wordBox.appendChild(grid);
+		var wn=el("div","note");wn.style.marginTop="8px";
+		wn.innerHTML="이 중에는 광고와 아무 상관 없는 단어도 있습니다(예: 오늘, 내일). 그 단어가 <b>어느 쪽 문자에 우연히 더 많이 나왔기 때문</b>입니다. 이 실습의 모델은 단어의 의미를 이해하는 대신, 학습 자료에서 나타난 <b>단어와 라벨의 통계적 관계</b>를 이용합니다. 전체 단어는 "+model.V+"개입니다.";
+		wordBox.appendChild(wn);
+
+		testBox.innerHTML="";
+		var th=el("div","note");
+		th.innerHTML="<b>새 문자 4건으로 시험</b> — 기계가 한 번도 보지 못한 문자입니다.";
+		testBox.appendChild(th);
+		var okN=0;
+		NEW.forEach(function(m){
+			var r=machJudge(m.t),ok=r.y===m.s;
+			if(ok)okN++;
+			var card=el("div","taskcard");
+			card.appendChild(el("div","tt",m.t));
+			var w=el("div","why show");
+			var rl=byRule(m.t);
+			w.innerHTML="<b>기계</b> "+(r.y===1?"광고로 봄":"정상으로 봄")+" — "+(ok?"맞음":"틀림")+
+				"<br><b>규칙</b> "+(rl?"‘"+rl+"’ 때문에 막힘":"통과")+" — "+((rl?1:0)===m.s?"맞음":"틀림");
+			card.appendChild(w);
+			card.style.borderColor=ok?cv("--ok"):cv("--sig");
+			var bb=el("button","btn tint","기계에게 이유 물어보기");
+			bb.style.marginTop="10px";
+			var panel=el("div");panel.style.display="none";
+			bb.addEventListener("click",function(){
+				var open=panel.style.display==="none";
+				panel.style.display=open?"":"none";
+				bb.textContent=open?"이유 창 닫기":"기계에게 이유 물어보기";
+				if(open&&!panel.built){explain(m.t,panel);panel.built=true;}
+			});
+			card.appendChild(bb);card.appendChild(panel);
+			testBox.appendChild(card);
+		});
+		mNew.val.textContent=okN+" / 4";
+		mNew.className="metric"+(okN>=3?" win":" bad");
+		drawCompare();
+	});
+
+	/* ---------- 이유 물어보기 ---------- */
+	function explain(text,host){
+		var skip={},first=null;
+		var wrap=el("div");wrap.style.marginTop="12px";host.appendChild(wrap);
+		var intro=el("div","note");
+		intro.innerHTML="기계는 문자에 든 단어의 점수를 <b>모두 더해서</b> 판단합니다. 합이 0보다 크면 광고입니다. 점수가 ‘—’인 단어는 학습에서 본 적이 없어 판단에 쓰이지 않았습니다.<br><br><b>이제 이유를 캐물어 봅시다.</b> 단어를 하나씩 빼면서, 답이 언제 바뀌는지 확인해 보세요.";
+		wrap.appendChild(intro);
+		var tblw=el("div","tblwrap");tblw.style.marginTop="8px";wrap.appendChild(tblw);
+		var sumLine=el("div","keyline");sumLine.style.marginTop="10px";wrap.appendChild(sumLine);
+		var fb=el("div","fb");wrap.appendChild(fb);
+		function render(){
+			var r=machJudge(text,skip);
+			if(first===null)first=r.y;
+			tblw.innerHTML="";
+			var t=document.createElement("table");t.className="tbl";
+			var hr=document.createElement("tr");
+			["단어","점수","어느 쪽","빼기"].forEach(function(x){
+				var c=document.createElement("th");c.textContent=x;hr.appendChild(c);
+			});
+			t.appendChild(hr);
+			r.all.forEach(function(a){
+				var tr=document.createElement("tr");
+				var c1=document.createElement("td");c1.textContent=a.w;
+				if(a.off){c1.style.textDecoration="line-through";c1.style.opacity=".5";}
+				var c2=document.createElement("td");
+				c2.textContent=a.known?(a.v>0?"+":"")+a.v.toFixed(2):"—";
+				c2.style.fontFamily="var(--mono)";
+				if(a.known&&!a.off)c2.style.color=a.v>0?cv("--sig-ink"):cv("--ok-ink");
+				var c3=document.createElement("td");
+				c3.textContent=a.known?(a.v>0?"광고 쪽":"정상 쪽"):"배운 적 없음";
+				if(!a.known)c3.style.color=cv("--ink-3");
+				var c4=document.createElement("td");
+				if(a.known){
+					var b=el("button","pick",a.off?"되돌리기":"빼기");
+					b.style.padding="5px 10px";b.style.fontSize="12px";
+					b.addEventListener("click",function(){skip[a.w]=!skip[a.w];render();});
+					c4.appendChild(b);
+				}else c4.textContent="";
+				[c1,c2,c3,c4].forEach(function(c){tr.appendChild(c);});
+				t.appendChild(tr);
+			});
+			tblw.appendChild(t);
+			var n=Object.keys(skip).filter(function(k){return skip[k];}).length;
+			sumLine.innerHTML="<b>점수를 모두 더하면</b> "+(r.s>0?"+":"")+r.s.toFixed(2)+
+				" → 0보다 "+(r.s>0?"큽니다":"크지 않습니다")+". 그래서 <b>"+(r.y===1?"광고":"정상")+"</b>"+(r.y===1?"로":"으로")+" 봤습니다."+
+				(n?"  (지금 "+n+"개 뺀 상태)":"");
+			if(!n){fb.className="fb";return;}
+			if(r.y===first){
+				fb.className="fb show no";
+				fb.innerHTML="<b>단어 "+n+"개를 뺐는데도 답은 그대로 ‘"+(r.y===1?"광고":"정상")+"’입니다.</b> 그 단어가 없어도 같은 답이 나옵니다. 그러면 그 단어를 <b>이유</b>라고 할 수 있을까요? 계속 빼 보세요.";
+			}else{
+				fb.className="fb show ok";
+				fb.innerHTML="<b>단어 "+n+"개를 빼고 나서야 답이 바뀌었습니다.</b> 이유가 단어 하나에 있지 않았습니다. <b>여러 단어에 조금씩 흩어져</b> 있었습니다. 그래서 “이 단어 때문입니다”라고 한 줄로 말할 수 없습니다.";
+			}
+		}
+		render();
+	}
+
+	/* ---------- 두 방법 비교 정리 ---------- */
+	var cmp=el("div");cmp.style.marginTop="20px";root.appendChild(cmp);
+	function drawCompare(){
+		cmp.innerHTML="";
+		var ch=el("div","bh");
+		ch.appendChild(el("span","tag c","정리"));ch.appendChild(el("h3",null,"‘왜 그렇게 판단했나요?’에 답해 보기"));
+		cmp.appendChild(ch);
+		var tw=el("div","tblwrap");
+		var t=document.createElement("table");t.className="tbl";
+		var rows=[
+			["","규칙으로 막기","기계가 배우기"],
+			["규칙을 누가 쓰나","내가 직접 쓴다","아무도 안 쓴다. 표시만 해 준다"],
+			["새 광고에 대응","단어를 내가 계속 추가해야 한다","표시를 더 해 주면 스스로 고쳐진다"],
+			["‘왜 막았나요?’","“‘무료’가 있어서요”<br>한 단어를 딱 집을 수 있다","“단어 여러 개의 점수를 더하니 0보다 커서요”<br>한 단어를 집을 수 없다"],
+			["단어 하나를 빼면","막지 않는다. 이유가 분명하다","답이 잘 바뀌지 않는다. 이유가 흩어져 있다"]
+		];
+		rows.forEach(function(r,i){
+			var tr=document.createElement("tr");
+			r.forEach(function(c){
+				var td=document.createElement(i===0?"th":"td");
+				td.innerHTML=c;tr.appendChild(td);
+			});
+			t.appendChild(tr);
+		});
+		tw.appendChild(t);cmp.appendChild(tw);
+		var kl=el("div","keyline");kl.style.marginTop="12px";
+		kl.innerHTML="<b>여기까지가 이번 주 핵심입니다.</b> 기계는 이유를 <b>숨기는</b> 것이 아닙니다. 이유가 한 곳에 없어서 <b>한 줄로 말할 수 없는</b> 것입니다. 지금은 단어가 "+(model?model.V:"수십")+"개라 표로 볼 수 있었습니다. 실제 AI는 훨씬 많은 파라미터와 복잡한 표현을 사용하며, 단어뿐 아니라 문맥과 다른 정보도 함께 처리합니다. 그때는 표로 만들어도 사람이 읽을 수 없습니다. 12주차에서 다시 다룹니다.";
+		cmp.appendChild(kl);
+	}
+
+	/* ---------- 내 문자로 시험 ---------- */
+	var h4=el("div","bh");h4.style.marginTop="20px";
+	h4.appendChild(el("span","tag c","시험"));h4.appendChild(el("h3",null,"내가 문자를 써서 넣어 보기"));
+	root.appendChild(h4);
+	var qrow=el("div","btnrow");
+	var qin=document.createElement("input");
+	qin.className="txtin";qin.placeholder="문자를 직접 써 보세요 (예: 무 료 이벤트 당첨)";qin.style.flex="1 1 240px";
+	var qgo=el("button","btn","두 방법으로 판정하기");
+	qrow.appendChild(qin);qrow.appendChild(qgo);root.appendChild(qrow);
+	var qout=el("div");qout.style.marginTop="12px";root.appendChild(qout);
+	function ask(){
+		var t=qin.value.trim();
+		if(!t){toast("문자를 적어 주세요");return;}
+		qout.innerHTML="";
+		var rl=byRule(t);
+		var c1=el("div","taskcard");
+		c1.appendChild(el("div","tt","규칙으로 판정"));
+		var w1=el("div","why show");
+		w1.innerHTML=rl?"‘"+rl+"’이(가) 있어서 <b>광고</b>로 막았습니다. 이유는 이 단어 하나입니다.":"막을 단어가 하나도 없어서 <b>통과</b>시켰습니다.";
+		c1.appendChild(w1);qout.appendChild(c1);
+		var c2=el("div","taskcard");
+		c2.appendChild(el("div","tt","기계가 판정"));
+		var w2=el("div","why show");
+		if(!model){
+			w2.innerHTML="아직 학습시키지 않았습니다. 위에서 표시를 하고 학습시켜 주세요.";
+			c2.appendChild(w2);
+		}else{
+			var r=machJudge(t);
+			w2.innerHTML="<b>"+(r.y===1?"광고":"정상")+"</b>"+(r.y===1?"로":"으로")+" 봤습니다. 점수를 모두 더하면 "+(r.s>0?"+":"")+r.s.toFixed(2)+"입니다.";
+			c2.appendChild(w2);
+			var bb=el("button","btn tint","기계에게 이유 물어보기");
+			bb.style.marginTop="10px";
+			var panel=el("div");panel.style.display="none";
+			bb.addEventListener("click",function(){
+				var open=panel.style.display==="none";
+				panel.style.display=open?"":"none";
+				bb.textContent=open?"이유 창 닫기":"기계에게 이유 물어보기";
+				if(open&&!panel.built){explain(t,panel);panel.built=true;}
+			});
+			c2.appendChild(bb);c2.appendChild(panel);
+		}
+		qout.appendChild(c2);
+	}
+	qgo.addEventListener("click",ask);
+	qin.addEventListener("keydown",function(e){if(e.key==="Enter")ask();});
+
+	function afterChange(){
+		MSG.forEach(function(m){m.mach=undefined;});
+		wordBox.innerHTML="";testBox.innerHTML="";cmp.innerHTML="";
+		mNew.val.textContent="–";mNew.className="metric";
+		drawList();
+	}
+	drawBan();drawList();
+};
+
+/* ================= 3주차 · Teachable Machine으로 머신러닝 ================= */
+STAGES.teachable=function(root){
+  var lead=el("p","lead");
+  lead.innerHTML="이번 실습에서는 <b>Google Teachable Machine</b>을 사용해 코딩 없이 직접 이미지 분류 모델을 만들어 봅니다. 얼굴 대신 책상 위 물건처럼 개인정보가 없는 대상을 사용하세요.";
+  root.appendChild(lead);
+
+  var openBox=el("div","block");
+  var bh=el("div","bh");
+  bh.appendChild(el("span","tag","TOOL"));
+  bh.appendChild(el("h3",null,"Teachable Machine 열기"));
+  openBox.appendChild(bh);
+
+  var p=el("p","lead");
+  p.innerHTML="Teachable Machine은 예시를 모아 <b>학습시키고 → 새로운 예시로 테스트</b>하는 과정을 브라우저에서 직접 경험할 수 있는 도구입니다. 코딩은 필요하지 않습니다.";
+  openBox.appendChild(p);
+
+  var a=document.createElement("a");
+  a.href="https://teachablemachine.withgoogle.com/train";
+  a.target="_blank";
+  a.rel="noopener";
+  a.className="btn";
+  a.textContent="Teachable Machine 열기 →";
+  a.style.display="inline-block";
+  a.style.textDecoration="none";
+  openBox.appendChild(a);
+
+  var note=el("div","note");
+  note.innerHTML="<b>개인정보 주의:</b> 얼굴·학생증·개인 문서 등 개인정보가 포함된 사진은 사용하지 마세요. 책, 펜, 컵처럼 개인정보가 없는 대상을 권장합니다.";
+  note.style.marginTop="14px";
+  openBox.appendChild(note);
+  root.appendChild(openBox);
+
+  var steps=el("div","block");
+  var bh2=el("div","bh");
+  bh2.appendChild(el("span","tag","STEPS"));
+  bh2.appendChild(el("h3",null,"오늘의 실습"));
+  steps.appendChild(bh2);
+
+  var ol=el("ol","list");
+  [
+    "<b>프로젝트 시작:</b> Image Project를 선택합니다.",
+    "<b>두 클래스 만들기:</b> 예를 들어 ‘컵’과 ‘펜’처럼 서로 다른 두 종류를 정합니다.",
+    "<b>예시 모으기:</b> 각 클래스에 여러 장의 사진을 넣습니다. 가능하면 각 클래스의 사진 수를 비슷하게 하고, 각도·거리·배경을 조금씩 바꿔 보세요.",
+    "<b>학습시키기:</b> Train Model을 눌러 모델을 학습시킵니다.",
+    "<b>새로운 사진으로 테스트:</b> 학습에 사용하지 않은 사진을 보여 주고 어떤 클래스라고 판단하는지 확인합니다.",
+    "<b>실험:</b> 배경이나 각도를 바꾸었을 때 결과가 달라지는지 확인합니다. 그다음 더 다양한 사진을 추가해 다시 학습하고 비교합니다."
+  ].forEach(function(t,i){
+    var li=el("li","li");
+    li.appendChild(el("span","dot"));
+    var pp=el("p");pp.innerHTML=(i+1)+". "+t;li.appendChild(pp);
+    ol.appendChild(li);
+  });
+  steps.appendChild(ol);
+  root.appendChild(steps);
+
+  var compare=el("div","block");
+  var bh3=el("div","bh");
+  bh3.appendChild(el("span","tag","COMPARE"));
+  bh3.appendChild(el("h3",null,"두 번 학습해 보고 비교하세요"));
+  compare.appendChild(bh3);
+
+  var grid=el("div","opts");
+  [
+    ["A. 제한된 데이터","같은 장소·비슷한 각도·비슷한 거리의 사진만 사용"],
+    ["B. 다양한 데이터","각도·거리·배경을 바꾼 사진을 골고루 추가"]
+  ].forEach(function(x){
+    var card=el("div","opt");
+    card.innerHTML="<b>"+x[0]+"</b><br><span>"+x[1]+"</span>";
+    grid.appendChild(card);
+  });
+  compare.appendChild(grid);
+
+  var q=el("p","q");
+  q.style.marginTop="16px";
+  q.innerHTML="<b>관찰 질문:</b> B의 새로운 사진 테스트 결과가 A보다 좋아졌다면, 데이터의 무엇이 달라졌기 때문일까요?";
+  compare.appendChild(q);
+
+  var hint=el("div","note");
+  hint.innerHTML="<b>핵심:</b> 모델의 성능만 보지 말고 <b>어떤 데이터를 보여 주었는지</b> 함께 보세요. 데이터가 바뀌면 모델의 판단도 바뀔 수 있습니다.";
+  hint.style.marginTop="12px";
+  compare.appendChild(hint);
+  root.appendChild(compare);
+};
+
+/* ================= 4주차 · 신경망의 학습을 직관적으로 ================= */
+STAGES.neural=function(root){
+  var lead=el("p","lead");
+  lead.innerHTML="이번 실습의 목표는 수학식을 외우는 것이 아닙니다. <b>입력 → 계산 → 예측 → 오차 → 가중치 조정</b>이라는 학습의 흐름을 직접 움직여 보는 것입니다.";
+  root.appendChild(lead);
+
+  var model=el("div","block");
+  var bh=el("div","bh");
+  bh.appendChild(el("span","tag","TRY"));
+  bh.appendChild(el("h3",null,"1. 가중치가 결과를 바꾸는 것을 먼저 봅니다"));
+  model.appendChild(bh);
+
+  var p=el("p","lead");
+  p.innerHTML="두 개의 입력이 있다고 생각해 봅시다. 각 입력에 <b>가중치</b>를 곱한 뒤 더하면 하나의 점수가 됩니다. 가중치를 바꾸면 같은 입력에서도 결과가 달라집니다.";
+  model.appendChild(p);
+
+  var controls=el("div","opts");
+  [["입력 x₁","1"],["입력 x₂","1"],["가중치 w₁","0.5"],["가중치 w₂","0.5"]].forEach(function(c){
+    var card=el("div","opt");
+    card.innerHTML="<b>"+c[0]+"</b><br><span>"+c[1]+"</span>";
+    controls.appendChild(card);
+  });
+  model.appendChild(controls);
+
+  var formula=el("div","formula");
+  formula.innerHTML="<b>점수 = x₁ × w₁ + x₂ × w₂</b><br><span style='font-size:14px;color:var(--ink-3)'>가중치가 커지면 해당 입력의 영향도 커집니다.</span>";
+  formula.style.textAlign="center";
+  formula.style.fontSize="22px";
+  formula.style.padding="18px";
+  model.appendChild(formula);
+
+  var note=el("div","note");
+  note.innerHTML="<b>생각해 보기:</b> w₁만 크게 바꾸면 결과가 어떻게 달라질까요? → <b>가중치는 입력이 결과에 미치는 영향의 크기를 조절하는 숫자</b>라고 생각하면 됩니다.";
+  note.style.marginTop="14px";
+  model.appendChild(note);
+  root.appendChild(model);
+
+  var learning=el("div","block");
+  var bh2=el("div","bh");
+  bh2.appendChild(el("span","tag","LEARN"));
+  bh2.appendChild(el("h3",null,"2. ‘틀린 답을 고치는 과정’을 직접 봅니다"));
+  learning.appendChild(bh2);
+
+  var flow=el("div","opts");
+  [
+    ["① 예측","현재 가중치로 결과를 계산합니다."],
+    ["② 비교","예측과 실제 정답을 비교합니다."],
+    ["③ 오차","얼마나 다른지 손실(loss)로 나타냅니다."],
+    ["④ 조정","오차를 줄이는 방향으로 가중치를 조금 바꿉니다."]
+  ].forEach(function(x){
+    var card=el("div","opt");
+    card.innerHTML="<b>"+x[0]+"</b><br><span>"+x[1]+"</span>";
+    flow.appendChild(card);
+  });
+  learning.appendChild(flow);
+
+  var btn=document.createElement("button");
+  btn.className="btn";
+  btn.textContent="한 번 학습해 보기";
+  btn.style.marginTop="16px";
+  learning.appendChild(btn);
+
+  var result=el("div","note");
+  result.style.marginTop="12px";
+  result.innerHTML="<b>학습 0회</b><br>현재 예측값을 정답에 맞게 조정하기 전입니다.";
+  learning.appendChild(result);
+
+  var w1=0.2,w2=0.2,target=1,count=0;
+  btn.onclick=function(){
+    var pred=w1+w2;
+    var err=target-pred;
+    w1 += err*0.25;
+    w2 += err*0.25;
+    count++;
+    var next=w1+w2;
+    result.innerHTML="<b>학습 "+count+"회</b><br>현재 예측: "+pred.toFixed(2)+" · 정답: "+target.toFixed(2)+"<br>가중치를 조정한 뒤 다음 예측은 <b>"+next.toFixed(2)+"</b>가 됩니다.";
+    if(count>=5) result.innerHTML+="<br><br><b>관찰:</b> 반복할수록 예측이 정답에 가까워집니다. 실제 신경망은 훨씬 많은 가중치와 복잡한 계산을 사용하지만, ‘예측 → 오차 → 조정’이라는 핵심 흐름은 같습니다.";
+  };
+  root.appendChild(learning);
+
+  var rate=el("div","block");
+  var bh3=el("div","bh");
+  bh3.appendChild(el("span","tag","LEARNING RATE"));
+  bh3.appendChild(el("h3",null,"3. 한 번에 얼마나 바꿀지도 중요합니다"));
+  rate.appendChild(bh3);
+
+  var p2=el("p","lead");
+  p2.innerHTML="학습률(learning rate)은 가중치를 <b>한 번에 얼마나 크게 바꿀지</b>와 관련됩니다.";
+  rate.appendChild(p2);
+
+  var q=el("p","q");
+  q.innerHTML="<b>예측:</b> 가중치를 한 번에 아주 크게 바꾸면 항상 더 빨리, 더 잘 학습할까요?";
+  rate.appendChild(q);
+
+  var answer=el("div","note");
+  answer.innerHTML="<b>꼭 그렇지는 않습니다.</b> 너무 큰 변화는 안정적인 학습을 방해할 수 있고, 너무 작은 변화는 학습을 느리게 할 수 있습니다.";
+  answer.style.marginTop="12px";
+  rate.appendChild(answer);
+  root.appendChild(rate);
+
+  var takeaway=el("div","block");
+  var bh4=el("div","bh");
+  bh4.appendChild(el("span","tag","TAKEAWAY"));
+  bh4.appendChild(el("h3",null,"오늘 가져갈 한 문장"));
+  takeaway.appendChild(bh4);
+  var big=el("p","lead");
+  big.style.fontSize="20px";
+  big.innerHTML="<b>신경망은 예측하고 → 틀린 정도를 계산하고 → 가중치를 조금씩 조정하는 과정을 반복하며 학습합니다.</b>";
+  takeaway.appendChild(big);
+  root.appendChild(takeaway);
+};
+
+/* ================= 5주차 · 특징과 표현을 직접 비교하기 ================= */
+STAGES.features=function(root){
+  var lead=el("p","lead");
+  lead.innerHTML="이번 실습에서는 <b>‘무엇을 보고 구분할 것인가?’</b>를 직접 경험합니다. 같은 물건을 여러 조건에서 보고, 분류에 도움이 되는 단서가 무엇인지 골라 봅니다.";
+  root.appendChild(lead);
+
+  var b=el("div","block"), h=el("div","bh");
+  h.appendChild(el("span","tag","OBSERVE")); h.appendChild(el("h3",null,"1. 같은 물건인데 왜 사진은 달라질까요?"));
+  b.appendChild(h);
+  var g=el("div","opts");
+  [["각도","정면 / 옆면 / 위에서 보기"],["거리","가까이 / 멀리"],["밝기","밝은 곳 / 어두운 곳"],["배경","단순한 배경 / 복잡한 배경"]].forEach(function(x){
+    var c=el("div","opt"); c.innerHTML="<b>"+x[0]+"</b><br><span>"+x[1]+"</span>"; g.appendChild(c);
+  });
+  b.appendChild(g);
+  var n=el("div","note"); n.innerHTML="<b>미션:</b> 주변 물건 하나를 정하고 위 조건 중 2가지 이상을 바꿔 사진을 찍어 보세요. 그래도 ‘같은 물건’이라고 판단할 수 있는 단서는 무엇인가요?"; n.style.marginTop="14px"; b.appendChild(n);
+  root.appendChild(b);
+
+  var b2=el("div","block"), h2=el("div","bh");
+  h2.appendChild(el("span","tag","FEATURE")); h2.appendChild(el("h3",null,"2. 분류에 도움이 되는 특징을 골라보세요")); b2.appendChild(h2);
+  var p=el("p","lead"); p.innerHTML="예를 들어 <b>컵 vs 펜</b>을 구분한다면 아래 단서 중 어떤 것이 여러 상황에서도 도움이 될까요?"; b2.appendChild(p);
+  [["모양·윤곽","여러 조건에서도어느 정도 유지될 수 있음",true],["배경 색","촬영 장소가 바뀌면 달라질 수 있음",false],["길쭉한 형태","펜을 구분하는 데 도움이 될 수 있음",true],["사진 파일명","사진 내용과 직접 관계없음",false]].forEach(function(x){
+    var c=el("button","opt"); c.type="button"; c.style.textAlign="left"; c.innerHTML="<b>"+x[0]+"</b><br><span>"+x[1]+"</span>";
+    c.onclick=function(){c.innerHTML="<b>"+x[0]+"</b><br><span>"+x[1]+"</span><br><small>"+(x[2]?"✓ 유용할 가능성이 큰 단서":"△ 조건이 바뀌면 쉽게 달라지는 단서")+"</small>"; c.style.outline="2px solid var(--ink)";};
+    b2.appendChild(c);
+  });
+  var n2=el("div","note"); n2.innerHTML="<b>핵심:</b> 특징(feature)은 목표를 구분하는 데 유용한 정보입니다."; n2.style.marginTop="14px"; b2.appendChild(n2);
+  root.appendChild(b2);
+
+  var b3=el("div","block"), h3=el("div","bh");
+  h3.appendChild(el("span","tag","DEEP LEARNING")); h3.appendChild(el("h3",null,"3. 딥러닝에서는 특징을 누가 찾을까요?")); b3.appendChild(h3);
+  var p3=el("p","lead"); p3.innerHTML="전통적인 머신러닝에서는 사람이 특징을 설계하는 경우가 많았습니다. 딥러닝에서는 신경망이 여러 층의 계산을 통해 <b>예측에 유용한 표현을 데이터에서 학습</b>할 수 있습니다."; b3.appendChild(p3);
+  var f=el("div","opts");
+  [["입력","픽셀 등 숫자로 표현된 데이터"],["초기 층","간단한 패턴을 처리"],["더 깊은 층","더 복잡한 패턴을 조합"],["출력","분류·예측 결과"]].forEach(function(x){var c=el("div","opt");c.innerHTML="<b>"+x[0]+"</b><br><span>"+x[1]+"</span>";f.appendChild(c);});
+  b3.appendChild(f);
+  var t=el("div","note");t.innerHTML="<b>오늘의 한 문장:</b> 딥러닝은 입력에서 예측에 유용한 표현을 여러 단계에 걸쳐 학습할 수 있습니다.";t.style.marginTop="14px";b3.appendChild(t);
+  root.appendChild(b3);
+
+/* ================= 멀티모달: 글로 사진 찾기 ================= */
+	var mm=el("div");mm.style.marginTop="24px";root.appendChild(mm);
+	var mh=el("div","bh");
+	mh.appendChild(el("span","tag o","멀티모달"));
+	mh.appendChild(el("h3",null,"글로 사진 찾기"));
+	mm.appendChild(mh);
+	var _h3=el("p","lead");
+	_h3.innerHTML="글과 사진은 전혀 다른 것입니다. 이 둘을 잇는 방법은 하나뿐입니다. <b>둘 다 숫자로 바꾸는 것</b>입니다. 사진 몇 장에 설명을 붙여 주면, 어떤 단어가 어떤 숫자와 함께 나오는지 기계가 배웁니다.";
+	mm.appendChild(_h3);
+
+	var PH=[];
+	var vocab=null;
+	var fin2=document.createElement("input");
+	fin2.type="file";fin2.accept="image/*";fin2.multiple=true;fin2.className="txtin";
+	mm.appendChild(fin2);
+	var seedRow=el("div","btnrow");
+	var seedB=el("button","btn gray","사진이 없으면 예시 그림 4장 넣기");
+	seedRow.appendChild(seedB);mm.appendChild(seedRow);
+	var _h4=el("div","note");
+	_h4.innerHTML="사진을 올린 뒤 각 사진 아래에 <b>설명을 한 줄</b>씩 써 주세요. 예) 밝은 낮에 찍은 바다 / 어두운 밤 골목";
+	mm.appendChild(_h4);
+
+	var phBox=el("div");phBox.style.marginTop="12px";mm.appendChild(phBox);
+	var trow=el("div","btnrow");
+	var learnB=el("button","btn","설명과 사진을 이어 배우기");
+	var clrB=el("button","btn gray","사진 모두 지우기");
+	trow.appendChild(learnB);trow.appendChild(clrB);mm.appendChild(trow);
+	var bridgeBox=el("div");bridgeBox.style.marginTop="12px";mm.appendChild(bridgeBox);
+
+	var srow=el("div","btnrow");srow.style.marginTop="14px";
+	var sin=document.createElement("input");
+	sin.className="txtin";sin.placeholder="찾고 싶은 것을 글로 쓰세요 (예: 밝은 바다)";sin.style.flex="1 1 240px";
+	var sgo=el("button","btn","글로 사진 찾기");
+	srow.appendChild(sin);srow.appendChild(sgo);mm.appendChild(srow);
+	var sres=el("div");sres.style.marginTop="12px";mm.appendChild(sres);
+	var mmKey=el("div","keyline");mm.appendChild(mmKey);
+	mmKey.innerHTML="<b>안내</b> 사진을 넣고 설명을 쓴 뒤, 배우게 하고 나서 검색해 보세요.";
+
+	function feat(rgb,n){
+		var sr=0,sg=0,sb=0,lum=[],i;
+		for(i=0;i<n*n;i++){
+			var r=rgb[i*3],g2=rgb[i*3+1],b=rgb[i*3+2];
+			sr+=r;sg+=g2;sb+=b;
+			lum.push(0.299*r+0.587*g2+0.114*b);
+		}
+		var cnt=n*n;
+		sr/=cnt;sg/=cnt;sb/=cnt;
+		var bright=0;for(i=0;i<cnt;i++)bright+=lum[i];bright/=cnt;
+		var warm=(sr-sb+1)/2;
+		var edge=0,e=0;
+		for(var y=0;y<n;y++)for(var x=0;x<n-1;x++){edge+=Math.abs(lum[y*n+x]-lum[y*n+x+1]);e++;}
+		for(var y2=0;y2<n-1;y2++)for(var x2=0;x2<n;x2++){edge+=Math.abs(lum[y2*n+x2]-lum[(y2+1)*n+x2]);e++;}
+		edge/=Math.max(1,e);
+		return [Math.round(bright*100),Math.round(warm*100),Math.round(Math.min(1,edge*4)*100)];
+	}
+	function rgbCanvas(rgb,n,px){
+		var c=document.createElement("canvas");c.width=n;c.height=n;
+		var x=c.getContext("2d"),img=x.createImageData(n,n);
+		for(var i=0;i<n*n;i++){
+			img.data[i*4]=Math.round(rgb[i*3]*255);
+			img.data[i*4+1]=Math.round(rgb[i*3+1]*255);
+			img.data[i*4+2]=Math.round(rgb[i*3+2]*255);
+			img.data[i*4+3]=255;
+		}
+		x.putImageData(img,0,0);
+		var o=document.createElement("canvas");o.width=px;o.height=px;
+		var oc=o.getContext("2d");oc.imageSmoothingEnabled=false;oc.drawImage(c,0,0,px,px);
+		o.style.width=px+"px";o.style.height=px+"px";o.style.borderRadius="8px";o.style.display="block";
+		return o;
+	}
+	function imgToRgb(im,n){
+		var c=document.createElement("canvas");c.width=n;c.height=n;
+		var x=c.getContext("2d"),s=Math.min(im.width,im.height);
+		x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,n,n);
+		var d=x.getImageData(0,0,n,n).data,v=new Array(n*n*3);
+		for(var i=0;i<n*n;i++){v[i*3]=d[i*4]/255;v[i*3+1]=d[i*4+1]/255;v[i*3+2]=d[i*4+2]/255;}
+		return v;
+	}
+	fin2.addEventListener("change",function(){
+		var files=[].slice.call(fin2.files||[]).slice(0,8);
+		if(!files.length)return;
+		var left=files.length;
+		files.forEach(function(f){
+			var fr=new FileReader();
+			fr.onload=function(){
+				var im=new Image();
+				im.onload=function(){
+					var rgb=imgToRgb(im,16);
+					PH.push({rgb:rgb,f:feat(rgb,16),cap:""});
+					if(--left<=0)drawPhotos();else drawPhotos();
+				};
+				im.onerror=function(){if(--left<=0)drawPhotos();};
+				im.src=fr.result;
+			};
+			fr.onerror=function(){if(--left<=0)drawPhotos();};
+			fr.readAsDataURL(f);
+		});
+		fin2.value="";
+	});
+	seedB.addEventListener("click",function(){
+		var SEEDS=[
+			{cap:"밝은 낮 하늘",f:function(x,y){return [0.55+y*0.35,0.75+y*0.2,0.95];}},
+			{cap:"어두운 밤 골목",f:function(x,y){return [0.08+y*0.1,0.09+y*0.1,0.16+y*0.12];}},
+			{cap:"따뜻한 저녁 노을",f:function(x,y){return [0.95,0.5+y*0.3,0.25+y*0.15];}},
+			{cap:"복잡한 무늬 벽",f:function(x,y){var v=((Math.floor(x*8)+Math.floor(y*8))%2)?0.85:0.2;return [v,v*0.9,v*0.8];}}
+		];
+		SEEDS.forEach(function(s){
+			var n=16,rgb=new Array(n*n*3);
+			for(var y=0;y<n;y++)for(var x=0;x<n;x++){
+				var c=s.f(x/n,y/n),i=y*n+x;
+				rgb[i*3]=c[0];rgb[i*3+1]=c[1];rgb[i*3+2]=c[2];
+			}
+			PH.push({rgb:rgb,f:feat(rgb,16),cap:s.cap,seed:true});
+		});
+		drawPhotos();
+	});
+	clrB.addEventListener("click",function(){PH=[];vocab=null;bridgeBox.innerHTML="";sres.innerHTML="";drawPhotos();});
+
+	function drawPhotos(){
+		phBox.innerHTML="";
+		if(!PH.length){phBox.appendChild(el("div","note","아직 사진이 없습니다."));return;}
+		PH.forEach(function(p,i){
+			var card=el("div","taskcard");
+			var row=el("div");row.style.display="flex";row.style.gap="12px";row.style.alignItems="flex-start";
+			row.appendChild(rgbCanvas(p.rgb,16,64));
+			var right=el("div");right.style.flex="1";
+			var nums=el("div","note");
+			nums.innerHTML="AI가 뽑은 숫자 — 밝기 <b>"+p.f[0]+"</b> · 따뜻함 <b>"+p.f[1]+"</b> · 복잡함 <b>"+p.f[2]+"</b>";
+			right.appendChild(nums);
+			var inp=document.createElement("input");
+			inp.className="txtin";inp.style.marginTop="6px";inp.placeholder="이 사진을 설명하는 한 줄";
+			inp.value=p.cap;
+			inp.addEventListener("input",function(){p.cap=inp.value;vocab=null;});
+			right.appendChild(inp);
+			row.appendChild(right);
+			card.appendChild(row);
+			var del=el("button","pick","이 사진 지우기");
+			del.style.marginTop="8px";
+			del.addEventListener("click",function(){PH.splice(i,1);vocab=null;drawPhotos();});
+			card.appendChild(del);
+			phBox.appendChild(card);
+		});
+	}
+	function words(t){
+		return t.replace(/[^가-힣0-9a-zA-Z ]/g," ").split(/\s+/).filter(function(w){return w.length>=2&&!/^[0-9]+$/.test(w);});
+	}
+	learnB.addEventListener("click",function(){
+		var used=PH.filter(function(p){return p.cap.trim();});
+		if(used.length<2){toast("사진 2장 이상에 설명을 써 주세요");return;}
+		var acc={};
+		used.forEach(function(p){
+			words(p.cap).forEach(function(w){
+				if(!acc[w])acc[w]={s:[0,0,0],n:0};
+				for(var k=0;k<3;k++)acc[w].s[k]+=p.f[k];
+				acc[w].n++;
+			});
+		});
+		vocab={};
+		Object.keys(acc).forEach(function(w){
+			vocab[w]=[Math.round(acc[w].s[0]/acc[w].n),Math.round(acc[w].s[1]/acc[w].n),Math.round(acc[w].s[2]/acc[w].n),acc[w].n];
+		});
+		bridgeBox.innerHTML="";
+		var bh=el("div","note");
+		bh.innerHTML="<b>기계가 만든 다리</b> — 단어마다, 그 단어가 붙은 사진들의 숫자를 평균 냈습니다. 이 표가 글과 사진을 잇습니다.";
+		bridgeBox.appendChild(bh);
+		var tw=el("div","tblwrap");tw.style.marginTop="6px";
+		var t=document.createElement("table");t.className="tbl";
+		var hr=document.createElement("tr");
+		["단어","밝기","따뜻함","복잡함","붙은 사진"].forEach(function(x){
+			var c=document.createElement("th");c.textContent=x;hr.appendChild(c);
+		});
+		t.appendChild(hr);
+		Object.keys(vocab).forEach(function(w){
+			var v=vocab[w],tr=document.createElement("tr");
+			[w,v[0],v[1],v[2],v[3]+"장"].forEach(function(x,i){
+				var td=document.createElement("td");td.textContent=x;
+				if(i>0&&i<4)td.style.fontFamily="var(--mono)";
+				tr.appendChild(td);
+			});
+			t.appendChild(tr);
+		});
+		tw.appendChild(t);bridgeBox.appendChild(tw);
+		mmKey.innerHTML="<b>이제 글로 찾을 수 있습니다</b> 단어가 숫자로 바뀌었기 때문입니다. 아래에 문장을 써서 찾아보세요.";
+	});
+	function search(){
+		var q=sin.value.trim();
+		if(!q){toast("찾을 말을 적어 주세요");return;}
+		if(!vocab){toast("먼저 배우게 해 주세요");return;}
+		sres.innerHTML="";
+		var ws=words(q),known=[],unknown=[];
+		ws.forEach(function(w){if(vocab[w])known.push(w);else unknown.push(w);});
+		if(!known.length){
+			var f0=el("div","fb show no");
+			f0.innerHTML="<b>찾을 수 없습니다.</b> ‘"+ws.join(", ")+"’은(는) 배운 적이 없는 단어입니다. 단어가 숫자로 바뀌지 않으면 사진과 이을 수 없습니다.<br><br>실제 AI가 아무 말이나 알아듣는 이유는 하나입니다. <b>사진과 설명이 짝지어진 자료를 수억 건 배웠기 때문</b>입니다. 우리는 "+PH.length+"장으로 배웠습니다.";
+			sres.appendChild(f0);
+			return;
+		}
+		var tgt=[0,0,0];
+		known.forEach(function(w){for(var k=0;k<3;k++)tgt[k]+=vocab[w][k];});
+		for(var k2=0;k2<3;k2++)tgt[k2]=Math.round(tgt[k2]/known.length);
+		var info=el("div","keyline");
+		info.innerHTML="<b>글을 숫자로 바꿨습니다</b> "+known.map(function(w){return "‘"+w+"’";}).join(" + ")+" → 밝기 <b>"+tgt[0]+"</b> · 따뜻함 <b>"+tgt[1]+"</b> · 복잡함 <b>"+tgt[2]+"</b>"+
+			(unknown.length?"<br><span class='term'>못 쓴 단어</span> "+unknown.join(", ")+" — 배운 적이 없어 계산에 넣지 못했습니다.":"");
+		sres.appendChild(info);
+		var scored=PH.map(function(p,i){
+			var d=0;for(var k=0;k<3;k++)d+=(p.f[k]-tgt[k])*(p.f[k]-tgt[k]);
+			return {p:p,i:i,d:Math.sqrt(d)};
+		}).sort(function(a,b){return a.d-b.d;});
+		var listw=el("div");listw.style.marginTop="10px";
+		scored.forEach(function(o,rank){
+			var card=el("div","taskcard");
+			var row=el("div");row.style.display="flex";row.style.gap="12px";row.style.alignItems="center";
+			row.appendChild(rgbCanvas(o.p.rgb,16,52));
+			var right=el("div");right.style.flex="1";
+			right.appendChild(el("div","tt",(rank+1)+"등 · "+(o.p.cap||"(설명 없음)")));
+			var nn=el("div","note");
+			nn.innerHTML="밝기 "+o.p.f[0]+" · 따뜻함 "+o.p.f[1]+" · 복잡함 "+o.p.f[2]+" &nbsp;→&nbsp; 글이 가리킨 숫자와의 거리 <b>"+o.d.toFixed(0)+"</b>";
+			right.appendChild(nn);
+			row.appendChild(right);
+			card.appendChild(row);
+			if(rank===0)card.style.borderColor=cv("--ok");
+			listw.appendChild(card);
+		});
+		sres.appendChild(listw);
+		var fb=el("div","fb show ok");
+		fb.innerHTML="<b>거리가 가장 가까운 사진을 골랐습니다.</b> 기계는 사진에 무엇이 찍혔는지 모릅니다. 글에서 나온 숫자와 사진에서 나온 숫자가 얼마나 가까운지만 봅니다. 이것이 글과 그림을 잇는 방법입니다.<br><br>지금 우리는 숫자를 <b>3개</b>만 썼습니다. 그래서 밝기·색·무늬만 구분합니다. 실제 AI는 숫자를 <b>수백 개</b> 쓰고, 사진과 설명이 짝지어진 자료를 수억 건 배웁니다. 그래서 ‘고양이’ 같은 말도 알아듣습니다.";
+		sres.appendChild(fb);
+	}
+	sgo.addEventListener("click",search);
+	sin.addEventListener("keydown",function(e){if(e.key==="Enter")search();});
+
+	document.addEventListener("themechange",render);
+	setShape("v");
+	render();
+	drawPhotos();
+};
+
+/* ================= 6주차 · 다음 단어 예측과 지어내기 ================= */
+STAGES.genlm=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="글을 하나 넣으면, 그 글에서 <b>어떤 단어 뒤에 어떤 단어가 몇 번 나왔는지</b> 세어 표를 만듭니다. 그 표만으로 문장을 이어 봅니다. AI가 하는 일도 규모만 클 뿐 이것과 같습니다.";
+	root.appendChild(lead);
+
+	var SAMPLE="열람실은 3층에 있습니다. 열람실은 밤 열 시에 닫습니다. 열람실은 예약이 필요 없습니다. "+
+		"세미나실은 2층에 있습니다. 세미나실은 저녁 여섯 시에 닫습니다. 세미나실은 예약이 필요합니다. "+
+		"열람실은 시험 기간에 사람이 많습니다. 세미나실은 여러 명이 모여 씁니다. "+
+		"도서관은 평일에 아홉 시에 엽니다. 도서관은 주말에 열 시에 엽니다.";
+	var ta=document.createElement("textarea");
+	ta.className="txtin";ta.rows=5;ta.style.resize="vertical";
+	ta.placeholder="여기에 글을 붙여넣으세요. 뉴스 기사, 안내문, 내가 쓴 글 무엇이든 됩니다.";
+	ta.value=SAMPLE;
+	root.appendChild(ta);
+	var brow=el("div","btnrow");
+	var build=el("button","btn","이 글로 표 만들기");
+	var reset=el("button","btn gray","예시 글로 되돌리기");
+	brow.appendChild(build);brow.appendChild(reset);root.appendChild(brow);
+
+	var stat=el("div","metrics");
+	var mW=metric("단어 수","–"),mP=metric("이어진 짝","–");
+	stat.appendChild(mW);stat.appendChild(mP);root.appendChild(stat);
+
+	var startWrap=el("div");startWrap.style.marginTop="12px";root.appendChild(startWrap);
+	var sent=el("div","keyline");sent.style.fontSize="18px";root.appendChild(sent);
+	var tbl=el("div","tblwrap");root.appendChild(tbl);
+	var cbox=el("div");root.appendChild(cbox);
+	var temp=0.6;
+	ctlRow(cbox,"온도",0,1.4,.05,temp,function(v){return v.toFixed(2);},function(v){temp=v;showNext();});
+	var tnote=el("div","note");root.appendChild(tnote);
+	var grow=el("div","btnrow");
+	var nx=el("button","btn","다음 단어 뽑기");
+	var chk=el("button","btn tint","이 문장이 원문에 있는지 찾아보기");
+	var rs=el("button","btn gray","문장 지우기");
+	grow.appendChild(nx);grow.appendChild(chk);grow.appendChild(rs);root.appendChild(grow);
+	var checkBox=el("div");checkBox.style.marginTop="12px";root.appendChild(checkBox);
+
+	var table={},words=[],seq=[],normText="";
+	function norm(t){return t.replace(/[\n\r]+/g," ").replace(/[.,!?"'’‘]/g," ").replace(/\s+/g," ").trim();}
+	function buildTable(){
+		normText=norm(ta.value);
+		var w=normText.split(" ").filter(function(x){return x.length>0;});
+		table={};var pairs=0;
+		for(var i=0;i<w.length-1;i++){
+			if(!table[w[i]])table[w[i]]={};
+			table[w[i]][w[i+1]]=(table[w[i]][w[i+1]]||0)+1;pairs++;
+		}
+		words=Object.keys(table);
+		mW.val.textContent=String(w.length);mP.val.textContent=String(pairs);
+		mW.className="metric win";mP.className="metric win";
+		seq=[];checkBox.innerHTML="";
+		startWrap.innerHTML="";
+		startWrap.appendChild(el("div","note","시작할 단어를 고르세요. 이 글에 나온 단어만 고를 수 있습니다."));
+		var ch=el("div","chips");
+		var order=[];
+		ta.value.split(String.fromCharCode(10)).join(' ').split(/[.!?]/).forEach(function(line){
+			var f=norm(line).split(" ")[0];
+			if(f&&table[f]&&order.indexOf(f)<0)order.push(f);
+		});
+		words.forEach(function(w){if(order.indexOf(w)<0)order.push(w);});
+		order.slice(0,14).forEach(function(x){
+			var b=el("button","chip",x);
+			b.addEventListener("click",function(){
+				seq=[x];
+				var cs=ch.querySelectorAll(".chip");
+				for(var k=0;k<cs.length;k++)cs[k].setAttribute("aria-pressed","false");
+				b.setAttribute("aria-pressed","true");
+				checkBox.innerHTML="";showNext();
+			});
+			ch.appendChild(b);
+		});
+		startWrap.appendChild(ch);
+		showNext();
+	}
+	function probs(){
+		var last=seq.length?seq[seq.length-1]:null;
+		var row=last?table[last]:null;
+		if(!row)return [];
+		var keys=Object.keys(row);
+		var t=Math.max(.05,temp);
+		var vals=keys.map(function(k){return Math.pow(row[k],1/t);});
+		var sum=vals.reduce(function(a,b2){return a+b2;},0);
+		return keys.map(function(k,i){return {w:k,n:row[k],p:vals[i]/sum*100};}).sort(function(a,b2){return b2.p-a.p;});
+	}
+	function showNext(picked){
+		sent.innerHTML=seq.length?"<b>"+seq.join(" ")+"</b>":"<b>시작할 단어를 고르세요.</b>";
+		var ps=probs();
+		tbl.innerHTML="";
+		if(!seq.length){tnote.textContent="";return;}
+		if(!ps.length){
+			tnote.innerHTML="<b>‘"+seq[seq.length-1]+"’ 뒤에 나온 단어가 이 글에 없습니다.</b> 그래서 더 이을 수 없습니다. 글이 짧을수록 이런 일이 자주 생깁니다.";
+			return;
+		}
+		var t=document.createElement("table");t.className="tbl";
+		var th=document.createElement("tr");
+		["‘"+seq[seq.length-1]+"’ 다음 단어","이 글에서 나온 횟수","뽑힐 확률"].forEach(function(x){
+			var c=document.createElement("th");c.textContent=x;th.appendChild(c);
+		});
+		t.appendChild(th);
+		ps.forEach(function(p){
+			var tr=document.createElement("tr");
+			var c1=document.createElement("td");c1.textContent=p.w;
+			if(picked===p.w){c1.style.fontWeight="700";c1.style.color=cv("--sig-ink");}
+			var c2=document.createElement("td");c2.textContent=p.n+"번";
+			var c3=document.createElement("td");c3.textContent=p.p.toFixed(0)+"%";
+			tr.appendChild(c1);tr.appendChild(c2);tr.appendChild(c3);t.appendChild(tr);
+		});
+		tbl.appendChild(t);
+		tnote.textContent=temp<.35?"온도가 낮습니다. 가장 많이 나온 단어만 거의 계속 뽑힙니다."
+			:temp>.9?"온도가 높습니다. 적게 나온 단어도 자주 뽑혀서 문장이 엉뚱해집니다."
+			:"보통입니다. 많이 나온 단어가 주로 뽑히고, 가끔 다른 단어도 나옵니다.";
+	}
+	nx.addEventListener("click",function(){
+		if(!seq.length){toast("시작할 단어를 먼저 고르세요");return;}
+		var ps=probs();
+		if(!ps.length){toast("더 이을 단어가 없습니다");return;}
+		if(seq.length>=12){toast("문장을 지우고 다시 해 보세요");return;}
+		var r=Math.random()*100,acc2=0,pick=ps[0].w;
+		for(var i=0;i<ps.length;i++){acc2+=ps[i].p;if(r<=acc2){pick=ps[i].w;break;}}
+		seq.push(pick);checkBox.innerHTML="";showNext(pick);
+	});
+	rs.addEventListener("click",function(){seq=seq.slice(0,1);checkBox.innerHTML="";showNext();});
+	build.addEventListener("click",buildTable);
+	reset.addEventListener("click",function(){ta.value=SAMPLE;buildTable();});
+
+	/* ---------- 원문 대조 ---------- */
+	chk.addEventListener("click",function(){
+		if(seq.length<3){toast("단어를 3개 이상 이어 주세요");return;}
+		checkBox.innerHTML="";
+		var full=seq.join(" ");
+		var inFull=normText.indexOf(full)>=0;
+		var head=el("div","fb show "+(inFull?"ok":"no"));
+		head.innerHTML=inFull
+			? "<b>이 문장은 원문에 그대로 있습니다.</b> 기계가 원문을 따라 읽은 셈입니다. 온도를 높여서 다시 만들어 보세요."
+			: "<b>이 문장은 원문에 없습니다.</b> 그런데 읽어 보면 자연스럽습니다. 어디서 만들어졌는지 아래에서 확인해 보세요.";
+		checkBox.appendChild(head);
+
+		var tw=el("div","tblwrap");tw.style.marginTop="10px";
+		var t=document.createElement("table");t.className="tbl";
+		var hr=document.createElement("tr");
+		["이어진 자리","원문에 있나"].forEach(function(x){
+			var c=document.createElement("th");c.textContent=x;hr.appendChild(c);
+		});
+		t.appendChild(hr);
+		var i,bi=0,biOk=0,tri=0,triOk=0;
+		for(i=0;i+1<seq.length;i++){
+			var s2=seq.slice(i,i+2).join(" ");
+			var ok2=normText.indexOf(s2)>=0;
+			bi++;if(ok2)biOk++;
+			var tr=document.createElement("tr");
+			var c1=document.createElement("td");c1.textContent="두 단어 · "+s2;
+			var c2=document.createElement("td");c2.textContent=ok2?"있음":"없음";
+			c2.style.color=ok2?cv("--ok-ink"):cv("--sig-ink");c2.style.fontWeight="600";
+			tr.appendChild(c1);tr.appendChild(c2);t.appendChild(tr);
+		}
+		for(i=0;i+2<seq.length;i++){
+			var s3=seq.slice(i,i+3).join(" ");
+			var ok3=normText.indexOf(s3)>=0;
+			tri++;if(ok3)triOk++;
+			var tr2=document.createElement("tr");
+			var d1=document.createElement("td");d1.textContent="세 단어 · "+s3;
+			var d2=document.createElement("td");d2.textContent=ok3?"있음":"없음";
+			d2.style.color=ok3?cv("--ok-ink"):cv("--sig-ink");d2.style.fontWeight="600";
+			if(!ok3){d1.style.fontWeight="700";}
+			tr2.appendChild(d1);tr2.appendChild(d2);t.appendChild(tr2);
+		}
+		tw.appendChild(t);checkBox.appendChild(tw);
+
+		var why=el("div","keyline");why.style.marginTop="10px";
+		if(tri>triOk){
+			why.innerHTML="<b>두 단어씩은 "+biOk+"/"+bi+"개가 원문에 있습니다.</b> 표를 두 단어 짝으로 만들었으니 당연합니다.<br>"+
+				"<b>그런데 세 단어가 이어진 자리는 "+(tri-triOk)+"개가 원문에 없습니다.</b> 바로 그 자리에서 기계가 <b>새로 만들어 냈습니다</b>.<br><br>"+
+				"단어 하나하나는 전부 원문에서 가져왔습니다. 이어 붙인 문장은 원문에 없습니다. 그런데도 읽으면 자연스럽습니다. <b>이것이 AI가 사실이 아닌 말을 자신 있게 하는 방식입니다.</b>";
+		}else{
+			why.innerHTML="<b>이번에는 이어진 자리가 모두 원문에 있습니다.</b> 온도를 올리고 단어를 더 이어 보세요. 원문에 없는 자리가 곧 나타납니다.";
+		}
+		checkBox.appendChild(why);
+
+		if(!inFull&&/열람실은 예약이 필요합니다|세미나실은 예약이 필요 없습니다|열람실은 저녁|세미나실은 밤|도서관은 평일에 열|도서관은 주말에 아홉/.test(full)){
+			var warn=el("div","fb show no");
+			warn.style.marginTop="10px";
+			warn.innerHTML="<b>사실과 반대인 문장이 만들어졌습니다.</b> 위 글을 다시 읽어 보세요. 반대로 적혀 있습니다. 기계는 단어를 이었을 뿐, 맞는 말인지 확인하지 않았습니다.";
+			checkBox.appendChild(warn);
+		}
+	});
+
+	/* ---------- 확인하는 방법 ---------- */
+	var h=el("div");h.style.marginTop="22px";root.appendChild(h);
+	var hh=el("div","bh");
+	hh.appendChild(el("span","tag c","확인"));hh.appendChild(el("h3",null,"그래서 어떻게 확인하나"));
+	h.appendChild(hh);
+	h.appendChild(el("p","lead","방금 우리가 만든 기계도 원문에 없는 문장을 만들었습니다. 진짜 AI도 같습니다. 아래 세 답변 중 지어낸 것을 골라 보세요."));
+	var ANS=[
+		{t:"창원대학교는 경상남도 창원시에 있습니다.",fake:false,why:"확인할 수 있는 사실입니다."},
+		{t:"창원대학교 도서관은 1978년 3월 12일에 소장 도서 47,318권으로 문을 열었습니다.",fake:true,why:"날짜와 숫자가 지나치게 정확합니다. 이렇게 <b>딱 떨어지는 숫자</b>가 근거 없이 나오면 지어낸 것일 때가 많습니다. 방금 실습에서 ‘열람실은 예약이 필요합니다’ 같은 문장이 만들어진 것과 같은 방식입니다."},
+		{t:"대학 도서관은 보통 학기 중과 방학 중 운영 시간이 다릅니다.",fake:false,why:"일반적으로 맞는 설명입니다."}
+	];
+	var hres=el("div","fb");
+	ANS.forEach(function(a){
+		var card=el("div","taskcard");
+		card.appendChild(el("div","tt",a.t));
+		var row=el("div","picks");
+		var b1=el("button","pick","지어낸 것 같다");
+		b1.addEventListener("click",function(){
+			if(card.locked)return;card.locked=true;
+			b1.classList.add(a.fake?"right":"wrong");
+			var w=el("div","why show");w.innerHTML=(a.fake?"맞습니다. ":"이것은 사실입니다. ")+a.why;
+			card.appendChild(w);
+			hres.className="fb show ok";
+			hres.innerHTML="<b>확인하는 방법은 하나뿐입니다.</b> 실습에서 우리가 한 것과 같습니다. <b>원문을 열어 그 문장이 정말 있는지 맞춰 보는 것</b>입니다. 이름·숫자·연도가 나오면 반드시 출처를 물어보세요. 같은 답이 여러 번 나오는 것은 근거가 아닙니다.";
+		});
+		row.appendChild(b1);card.appendChild(row);h.appendChild(card);
+	});
+	h.appendChild(hres);
+	buildTable();
+};
+
+/* ================= 7주차 · 중간 점검 ================= */
+STAGES.midreview=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="1주차부터 6주차까지 핵심만 모았습니다. 틀린 문제의 주차로 돌아가 실습을 한 번 더 해 보세요.";
+	root.appendChild(lead);
+	var QS=[
+		{w:1,q:"AI에게 맡기기 좋은 일의 공통점은?",o:["반복이 많고 사례가 많다","돈이 많이 든다","사람이 싫어한다","시간이 오래 걸린다"],a:0},
+		{w:2,q:"규칙기반의 가장 큰 약점은?",o:["느리다","규칙에 없는 표현이 오면 답을 못 한다","비싸다","글씨가 작다"],a:1},
+		{w:3,q:"학습 데이터가 한쪽으로 치우치면?",o:["아무 문제 없다","적게 배운 쪽을 자주 틀린다","전체 정확도가 0이 된다","학습이 멈춘다"],a:1},
+		{w:3,q:"정답을 붙인 예시로 배우는 방법은?",o:["지도학습","비지도학습","강화학습","규칙기반"],a:0},
+		{w:4,q:"기계가 학습한다는 말의 뜻은?",o:["정답을 외운다","틀린 만큼 숫자를 조금씩 고친다","규칙을 더한다","데이터를 지운다"],a:1},
+		{w:5,q:"AI가 그림에서 가장 먼저 찾는 것은?",o:["색 이름","선과 모서리 같은 특징","그림의 제목","파일 크기"],a:1},
+		{w:6,q:"생성형 AI가 문장을 만드는 방법은?",o:["사전에서 찾는다","다음에 올 단어를 확률로 고른다","사람에게 물어본다","규칙표를 본다"],a:1},
+		{w:6,q:"AI가 알려 준 숫자를 쓰기 전에 할 일은?",o:["출처를 열어 직접 확인한다","한 번 더 물어본다","길게 다시 묻는다","그냥 쓴다"],a:0}
+	];
+	var box=el("div");root.appendChild(box);
+	var score=0,answered=0;
+	var mrow=el("div","metrics");
+	var mS=metric("한 번에 맞힌 문제","0 / 8");
+	mrow.appendChild(mS);root.appendChild(mrow);
+	var res=el("div","fb");root.appendChild(res);
+	QS.forEach(function(item,i){
+		var card=el("div","taskcard");
+		card.appendChild(el("div","tt",(i+1)+". "+item.q+"  ("+item.w+"주차)"));
+		var row=el("div","picks");
+		item.o.forEach(function(o,j){
+			var b=el("button","pick",o);
+			b.addEventListener("click",function(){
+				if(card.locked)return;
+				var right=(j===item.a);
+				if(!right&&!card.tried){
+					card.tried=1;b.classList.add("wrong");b.disabled=true;
+					if(!card.hint){card.hint=el("div","why show");card.appendChild(card.hint);}
+					card.hint.innerHTML="<b>다시 한 번</b> 아직 정답이 아닙니다. 오늘 배운 내용을 떠올리며 한 번 더 골라 보세요.";
+					return;
+				}
+				card.locked=true;answered++;
+				if(card.hint)card.hint.remove();
+				if(right){b.classList.add("right");if(!card.tried)score++;}
+				else{b.classList.add("wrong");row.querySelectorAll(".pick")[item.a].classList.add("right");}
+				mS.val.textContent=score+" / 8";
+				mS.className="metric"+(score>=6?" win":"");
+				if(!right){
+					var w=el("div","why show");w.innerHTML="<b>"+item.w+"주차</b>로 돌아가 다시 확인해 보세요.";
+					var link=el("button","btn tint",item.w+"주차 열기");
+					link.style.marginTop="8px";
+					link.addEventListener("click",function(){openWeek(item.w);});
+					card.appendChild(w);card.appendChild(link);
+				}
+				if(answered===QS.length){
+					res.className="fb show "+(score>=6?"ok":"no");
+					res.innerHTML="<b>"+score+" / 8</b> "+(score>=6?"중간고사 준비가 잘 되어 있습니다. 틀린 주차만 한 번 더 보세요.":"틀린 문제의 주차로 돌아가 실습을 다시 해 보세요. 개념이 훨씬 빨리 정리됩니다.");
+				}
+			});
+			row.appendChild(b);
+		});
+		card.appendChild(row);box.appendChild(card);
+	});
+
+	var d=el("div");d.style.marginTop="20px";root.appendChild(d);
+	d.appendChild(el("p","lead","아래는 같은 과제를 서로 다르게 요청한 네 가지입니다. 어느 것이 가장 좋은 결과를 낼까요?"));
+	var REQ=[
+		{t:"우리 동아리 홍보 글 좀 써 줘.",ok:false,why:"무엇을, 누구에게, 어떤 형식으로 줄지 하나도 없습니다. AI는 빈칸을 일반적인 내용으로 채웁니다."},
+		{t:"우리 동아리 홍보 글을 아주 멋지게, 감동적으로 써 줘.",ok:false,why:"‘멋지게’는 사람마다 뜻이 다릅니다. 확인할 수 있는 기준이 아닙니다."},
+		{t:"신입생 대상 동아리 소개글 300자. 활동 3개(주 1회 합주·학기말 공연·교내 봉사)를 반드시 넣고, 없는 활동은 쓰지 말 것. 딱딱한 존댓말.",ok:true,why:"산출물·형식·독자·성공기준이 모두 있습니다. 게다가 <b>하지 말 것</b>까지 적혀 있습니다."},
+		{t:"동아리 홍보 글을 길게 써 줘. 5000자 정도.",ok:false,why:"길이만 정했습니다. 내용과 독자가 없으면 길기만 한 글이 나옵니다."}
+	];
+	var dres=el("div","fb");
+	REQ.forEach(function(r,i){
+		var card=el("div","taskcard");
+		card.appendChild(el("div","tt",String.fromCharCode(65+i)+". "+r.t));
+		var row=el("div","picks");
+		var b=el("button","pick","이게 가장 좋다");
+		b.addEventListener("click",function(){
+			b.classList.add(r.ok?"right":"wrong");
+			var w=el("div","why show");w.innerHTML=r.why;card.appendChild(w);
+			dres.className="fb show "+(r.ok?"ok":"no");
+			dres.innerHTML="<b>좋은 요청문의 조건</b> 길이가 아닙니다. <b>산출물·형식·독자·성공기준</b> 네 칸이 채워졌는지로 정해집니다. 9주차에 이 네 칸을 직접 채워 봅니다.";
+		});
+		row.appendChild(b);card.appendChild(row);d.appendChild(card);
+	});
+	d.appendChild(dres);
+};
+
+/* ================= 9주차 · 명세 4칸과 맥락 ================= */
+STAGES.spec=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="요청문을 직접 만들어 봅니다. 칸을 채울수록 아래 요청문이 자라납니다. 완성한 요청문은 그대로 복사해서 실제로 써도 됩니다.";
+	root.appendChild(lead);
+
+	var FIELDS=[
+		{k:"산출물",q:"무엇을 만들까요?",o:[{t:"(비워 둠)",v:null},{t:"소개 글",v:"소개 글을 써 주세요"},{t:"소개 글 300자",v:"소개 글을 300자로 써 주세요"}]},
+		{k:"형식",q:"어떤 형태로 받을까요?",o:[{t:"(비워 둠)",v:null},{t:"줄글 한 문단",v:"줄글 한 문단으로 주세요"},{t:"제목 1줄 + 본문 3줄",v:"제목 1줄과 본문 3줄로 나누어 주세요"}]},
+		{k:"독자",q:"누가 읽나요?",o:[{t:"(비워 둠)",v:null},{t:"처음 오는 손님",v:"처음 오는 손님이 읽습니다"},{t:"근처 직장인",v:"점심시간에 오는 근처 직장인이 읽습니다"}]},
+		{k:"성공기준",q:"무엇이 되면 잘한 것인가요?",o:[{t:"(비워 둠)",v:null},{t:"읽기 쉬울 것",v:"중학생도 읽을 수 있게 쉬운 문장으로 써 주세요"},{t:"확인된 사실만 쓸 것",v:"아래 ‘확인된 사실’에 있는 내용만 쓰고, 없는 내용은 절대 넣지 마세요"}]}
+	];
+	var pick=[0,0,0,0];
+	FIELDS.forEach(function(f,i){
+		var card=el("div","taskcard");
+		card.appendChild(el("div","tt",(i+1)+". "+f.k+" — "+f.q));
+		var row=el("div","picks");
+		f.o.forEach(function(o,j){
+			var b=el("button","pick"+(j===0?" sel":""),o.t);
+			b.addEventListener("click",function(){
+				pick[i]=j;
+				var bs=row.querySelectorAll(".pick");
+				for(var k=0;k<bs.length;k++)bs[k].classList.remove("sel");
+				b.classList.add("sel");render();
+			});
+			row.appendChild(b);
+		});
+		card.appendChild(row);root.appendChild(card);
+	});
+
+	var h2=el("div","bh");h2.style.marginTop="18px";
+	h2.appendChild(el("span","tag o","맥락"));h2.appendChild(el("h3",null,"AI가 모르는 우리 정보 적기"));root.appendChild(h2);
+	var _h5=el("p","lead");
+	_h5.innerHTML="여기가 비어 있으면 AI는 빈칸을 <b>그럴듯한 일반적인 내용</b>으로 채웁니다. 아는 곳을 하나 골라 직접 채워 보세요.";
+	root.appendChild(_h5);
+	function field(label,ph,rows){
+		var box=el("div");box.style.marginTop="10px";
+		box.appendChild(el("div","note",label));
+		var i=rows?document.createElement("textarea"):document.createElement("input");
+		i.className="txtin";if(rows){i.rows=rows;i.style.resize="vertical";}
+		i.placeholder=ph;
+		i.addEventListener("input",render);
+		box.appendChild(i);root.appendChild(box);return i;
+	}
+	var fName=field("대상 이름","예) 골목 국숫집 ‘한그릇’");
+	var fDef=field("한 줄 정의","예) 1994년에 문을 연 골목 안쪽 국숫집");
+	var fTone=field("톤 3개 (쉼표로 구분)","예) 조용한, 오래된, 담백한");
+	var fFact=field("확인된 사실 (줄바꿈으로 구분)","예) 점심에만 영업\n메뉴는 세 가지\n골목 안쪽에 위치",3);
+	var fNo=field("하지 말 것 3개 (쉼표로 구분)","예) 과장 금지, 느낌표 금지, 확인 안 된 숫자 금지");
+
+	var h3=el("div","bh");h3.style.marginTop="18px";
+	h3.appendChild(el("span","tag c","결과"));h3.appendChild(el("h3",null,"완성된 요청문"));root.appendChild(h3);
+	var outTa=document.createElement("textarea");
+	outTa.className="txtin";outTa.rows=10;outTa.style.resize="vertical";outTa.readOnly=true;
+	root.appendChild(outTa);
+	var crow=el("div","btnrow");
+	var copyB=el("button","btn","요청문 복사하기");
+	crow.appendChild(copyB);root.appendChild(crow);
+	copyB.addEventListener("click",function(){
+		outTa.select();outTa.setSelectionRange(0,99999);
+		var ok=false;
+		try{ok=document.execCommand("copy");}catch(e){}
+		toast(ok?"복사했습니다":"복사가 막혔습니다. 글상자에서 직접 선택해 복사하세요");
+	});
+	var warn=el("div","fb");root.appendChild(warn);
+	var prev=el("div","fb");root.appendChild(prev);
+
+	function render(){
+		var lines=[],missing=[];
+		FIELDS.forEach(function(f,i){
+			var v=f.o[pick[i]].v;
+			if(v)lines.push("- "+v);else missing.push(f.k);
+		});
+		var name=fName.value.trim(),def=fDef.value.trim(),tone=fTone.value.trim();
+		var facts=fFact.value.split("\n").map(function(x){return x.trim();}).filter(Boolean);
+		var nos=fNo.value.split(",").map(function(x){return x.trim();}).filter(Boolean);
+
+		var txt="";
+		txt+="[무엇을 해 주세요]\n"+(lines.length?lines.join("\n"):"- (아직 고르지 않았습니다)")+"\n\n";
+		txt+="[대상]\n"+(name||"(비어 있음)")+(def?" — "+def:"")+"\n\n";
+		if(tone)txt+="[톤]\n"+tone+"\n\n";
+		txt+="[확인된 사실 — 이 목록에 없는 내용은 쓰지 마세요]\n"+(facts.length?facts.map(function(f){return "- "+f;}).join("\n"):"- (비어 있음)")+"\n\n";
+		txt+="[하지 말 것]\n"+(nos.length?nos.map(function(f){return "- "+f;}).join("\n"):"- (비어 있음)");
+		outTa.value=txt;
+
+		var gaps=missing.slice();
+		if(!name)gaps.push("대상 이름");
+		if(!facts.length)gaps.push("확인된 사실");
+		if(nos.length<3)gaps.push("하지 말 것 3개");
+		if(gaps.length){
+			warn.className="fb show no";
+			warn.innerHTML="<b>아직 비어 있는 칸</b> "+gaps.join(", ")+"<br>비어 있는 칸은 AI가 마음대로 채웁니다. 특히 <b>하지 말 것</b>은 학생들이 가장 자주 빠뜨리는 칸입니다.";
+		}else{
+			warn.className="fb show ok";
+			warn.innerHTML="<b>다 채웠습니다</b> 이 요청문을 복사해서 실제로 써 보세요. 결과에 ‘확인된 사실’에 없는 내용이 나오면, 그것이 AI가 지어낸 부분입니다.";
+		}
+
+		var hasFact=facts.length>0,hasNo=nos.length>=3,hasDef=!!def;
+		prev.className="fb show "+(hasFact&&hasNo&&hasDef?"ok":"no");
+		var head="<b>이렇게 달라집니다</b> (아래는 실제 AI 답이 아니라, 칸을 채웠을 때와 비웠을 때의 차이를 보여 주는 <b>예시</b>입니다)<br><br>";
+		if(!hasDef)prev.innerHTML=head+"“저희는 정성과 최고의 재료로 손님을 모십니다. 언제나 최고의 맛을 약속드립니다!”<br><span class='term'>문제</span> 어느 가게에나 붙는 글입니다. 우리 정보를 주지 않았기 때문입니다.";
+		else if(!hasFact)prev.innerHTML=head+"“1980년부터 3대째 이어 온 "+(name||"이곳")+". 하루 500그릇이 나가는…”<br><span class='term'>문제</span> 우리 이야기처럼 들립니다. 그런데 그 숫자는 우리가 준 적이 없습니다. AI가 지어낸 것입니다.";
+		else if(!hasNo)prev.innerHTML=head+"“"+(def||"우리 가게")+"! 진짜 맛집!! 놓치면 후회합니다!”<br><span class='term'>문제</span> 사실은 맞습니다. 그런데 과장과 느낌표가 많습니다. 하지 말 것을 주지 않았기 때문입니다.";
+		else prev.innerHTML=head+"“"+(def||"우리 가게")+"입니다. "+facts.slice(0,2).join(". ")+".”<br><span class='term'>좋습니다</span> 사실만 담겼고 톤도 지켰습니다. 네 칸과 맥락을 모두 채웠기 때문입니다.";
+	}
+	render();
+};
+
+/* ================= 10주차 · 작업 나누기와 도구 잇기 ================= */
+STAGES.orchestra=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="목표는 하나입니다. <b>우리 가게 소개 페이지 한 장 만들기</b>. 아래 작업의 순서를 바로잡고, 작업마다 알맞은 도구를 붙여 보세요.";
+	root.appendChild(lead);
+	var TOOLS=["검색 도구","글 생성 AI","이미지 생성 AI","페이지 제작 도구","사람이 직접"];
+	var TASKS=[
+		{id:"page",t:"페이지에 담아 링크 만들기",right:3,pos:4},
+		{id:"draft",t:"소개 문구 초안 쓰기",right:1,pos:2},
+		{id:"check",t:"모은 내용이 사실인지 확인하기",right:4,pos:1},
+		{id:"img",t:"어울리는 이미지 만들기",right:2,pos:3},
+		{id:"find",t:"가게 정보와 자료 모으기",right:0,pos:0}
+	];
+	var order=[0,1,2,3,4];
+	var tool=[null,null,null,null,null];
+	var box=el("div","steps");root.appendChild(box);
+	function draw(){
+		box.innerHTML="";
+		order.forEach(function(ti,slot){
+			var task=TASKS[ti];
+			var row=el("div","stepitem");
+			row.appendChild(el("span","ix",String(slot+1)));
+			var mid=el("span");
+			mid.appendChild(el("div","lbl",task.t));
+			var sel=document.createElement("select");
+			sel.className="txtin";sel.style.marginTop="6px";sel.style.fontSize="13.5px";sel.style.padding="7px 10px";
+			var o0=document.createElement("option");o0.value="";o0.textContent="도구 고르기";sel.appendChild(o0);
+			TOOLS.forEach(function(t,i){var o=document.createElement("option");o.value=i;o.textContent=t;if(tool[ti]===i)o.selected=true;sel.appendChild(o);});
+			sel.addEventListener("change",function(){tool[ti]=sel.value===""?null:+sel.value;});
+			mid.appendChild(sel);
+			row.appendChild(mid);
+			var mv=el("span","mv");
+			var up=el("button","mvb","↑"),dn=el("button","mvb","↓");
+			up.addEventListener("click",function(){if(slot===0)return;var t=order[slot-1];order[slot-1]=order[slot];order[slot]=t;draw();});
+			dn.addEventListener("click",function(){if(slot===order.length-1)return;var t=order[slot+1];order[slot+1]=order[slot];order[slot]=t;draw();});
+			mv.appendChild(up);mv.appendChild(dn);row.appendChild(mv);
+			box.appendChild(row);
+		});
+	}
+	draw();
+	var res=el("div","fb");root.appendChild(res);
+	var br=el("div","btnrow");
+	var run=el("button","btn","이 순서로 실행하기");
+	br.appendChild(run);root.appendChild(br);
+	run.addEventListener("click",function(){
+		var okOrder=true;
+		order.forEach(function(ti,slot){if(TASKS[ti].pos!==slot)okOrder=false;});
+		var noTool=order.filter(function(ti){return tool[ti]==null;});
+		var badTool=order.filter(function(ti){return tool[ti]!=null&&tool[ti]!==TASKS[ti].right;});
+		var checkSlot=order.indexOf(2), draftSlot=order.indexOf(1);
+		var rows=box.querySelectorAll(".stepitem");
+		order.forEach(function(ti,slot){
+			rows[slot].classList.remove("good","bad");
+			rows[slot].classList.add(TASKS[ti].pos===slot&&tool[ti]===TASKS[ti].right?"good":"bad");
+		});
+		if(noTool.length){
+			res.className="fb show no";
+			res.innerHTML="<b>도구를 아직 안 고른 작업이 있습니다</b> 작업마다 무엇으로 할지 정해야 다음 단계로 넘길 수 있습니다.";
+			return;
+		}
+		if(checkSlot>draftSlot){
+			res.className="fb show no";
+			res.innerHTML="<b>확인이 너무 늦습니다</b> 사실 확인을 초안보다 뒤에 두면, 틀린 내용이 글과 이미지와 페이지까지 그대로 갑니다. <b>확인은 앞쪽에</b> 두세요.";
+			return;
+		}
+		if(!okOrder||badTool.length){
+			res.className="fb show no";
+			res.innerHTML="<b>다시 맞춰 보세요</b> 순서는 자료 모으기 → 사실 확인 → 초안 → 이미지 → 페이지입니다. 사실 확인은 <b>사람이 직접</b> 해야 합니다.";
+			return;
+		}
+		res.className="fb show ok";
+		res.innerHTML="<b>잘 이었습니다</b> 도구를 많이 쓴 것이 아니라 <b>순서와 확인 지점</b>을 정한 것이 핵심입니다. 확인 단계가 있어야 앞의 잘못이 뒤로 넘어가지 않습니다.";
+	});
+};
+
+/* ================= 11주차 · 결과가 흔들리는 이유 ================= */
+STAGES.brandcheck=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="같은 요청을 여러 번 해도 생성 결과가 <b>달라질 수 있습니다</b>. 왜 그런지, 그리고 기준을 어떻게 주어 결과를 관리할 수 있는지 확인합니다.";
+	root.appendChild(lead);
+
+	/* ---------- 1. 기준 정하기 ---------- */
+	var h1=el("div","bh");
+	h1.appendChild(el("span","tag","STEP A"));h1.appendChild(el("h3",null,"내 기준 정하기"));
+	root.appendChild(h1);
+	root.appendChild(el("p","lead","AI에게 넘길 기준입니다. 단어를 바꾸면 아래 검사 결과가 바로 달라집니다."));
+	var noIn=document.createElement("input");
+	noIn.className="txtin";noIn.value="최고, 대박, 인생, 놓치면 후회";
+	var factIn=document.createElement("textarea");
+	factIn.className="txtin";factIn.rows=3;factIn.style.resize="vertical";
+	factIn.value="1994년에 문을 열었습니다\n점심에만 엽니다\n메뉴는 세 가지입니다";
+	var b1=el("div");b1.appendChild(el("div","note","쓰지 않기로 한 단어 (쉼표로 구분)"));b1.appendChild(noIn);root.appendChild(b1);
+	var b2=el("div");b2.style.marginTop="12px";
+	b2.appendChild(el("div","note","확인된 사실 (줄바꿈으로 구분) — 여기에 없는 숫자와 연도가 나오면 지어낸 것입니다"));
+	b2.appendChild(factIn);root.appendChild(b2);
+	var opts=el("div","chips");opts.style.marginTop="12px";
+	var flags={excl:true,num:true};
+	[["excl","느낌표 쓰지 않기"],["num","확인 안 된 숫자 쓰지 않기"]].forEach(function(p){
+		var b=el("button","chip",p[1]);b.setAttribute("aria-pressed","true");
+		b.addEventListener("click",function(){
+			flags[p[0]]=!flags[p[0]];b.setAttribute("aria-pressed",flags[p[0]]?"true":"false");
+			runBatch();check();
+		});
+		opts.appendChild(b);
+	});
+	root.appendChild(opts);
+	noIn.addEventListener("input",function(){runBatch();check();});
+	factIn.addEventListener("input",function(){runBatch();check();});
+
+	/* ---------- 검사기 ---------- */
+	function factNums(){return factIn.value.match(/[0-9]+/g)||[];}
+	function inspect(text){
+		var hits=[];
+		noIn.value.split(",").map(function(x){return x.trim();}).filter(Boolean).forEach(function(w){
+			if(text.indexOf(w)>=0)hits.push({t:"쓰지 않기로 한 단어 ‘"+w+"’",w:w});
+		});
+		if(flags.excl&&text.indexOf("!")>=0)hits.push({t:"느낌표가 있습니다",w:"!"});
+		if(flags.num){
+			var ok=factNums();
+			(text.match(/[0-9]+/g)||[]).forEach(function(nn){
+				if(ok.indexOf(nn)<0)hits.push({t:"확인된 사실에 없는 숫자 ‘"+nn+"’",w:nn});
+			});
+		}
+		return hits;
+	}
+	function mark(text,hits){
+		var html=text.replace(/</g,"&lt;");
+		hits.forEach(function(h){
+			if(!h.w)return;
+			html=html.split(h.w).join("<mark style='background:"+cv("--sig-soft")+";color:"+cv("--sig-ink")+";padding:0 3px;border-radius:4px'>"+h.w+"</mark>");
+		});
+		return html;
+	}
+
+	/* ---------- 2. 기준 없이 세 번 / 기준 붙여 세 번 ---------- */
+	var h2=el("div","bh");h2.style.marginTop="22px";
+	h2.appendChild(el("span","tag o","STEP B"));h2.appendChild(el("h3",null,"같은 요청을 세 번 해 보기"));
+	root.appendChild(h2);
+	var FREE=[
+		"창원 최고의 국숫집! 20년 전통의 손맛, 하루 500그릇 판매!",
+		"요즘 뜨는 그곳, 인생 국수를 만나다. 놓치면 후회하는 맛집",
+		"1994년 개업, 3대째 내려오는 정통 국수 전문점입니다."
+	];
+	var BOUND=[
+		"1994년에 문을 연 골목 안쪽 국숫집입니다. 점심에만 엽니다.",
+		"골목 안쪽에 있는 오래된 국숫집입니다. 메뉴는 세 가지입니다.",
+		"1994년부터 점심에만 문을 여는 국숫집입니다. 메뉴는 세 가지입니다."
+	];
+	var batchBox=el("div");root.appendChild(batchBox);
+	var batchFb=el("div","fb");root.appendChild(batchFb);
+
+	function runBatch(){
+		batchBox.innerHTML="";
+		var totals=[0,0];
+		[["기준을 주지 않고 요청",FREE,0],["기준을 함께 주고 요청",BOUND,1]].forEach(function(grp){
+			var wrap=el("div");wrap.style.marginTop="14px";
+			var gh=el("div","note");
+			wrap.appendChild(gh);
+			grp[1].forEach(function(txt,i){
+				var hits=inspect(txt);
+				totals[grp[2]]+=hits.length;
+				var card=el("div","taskcard");
+				var t=el("div","tt");t.innerHTML="<span class='term'>"+(i+1)+"번째</span> "+mark(txt,hits);
+				card.appendChild(t);
+				var w=el("div","why show");
+				w.innerHTML=hits.length
+					? "<b>기준을 어긴 곳 "+hits.length+"군데</b> · "+hits.map(function(h){return h.t;}).join(" · ")
+					: "<b>기준을 모두 지켰습니다.</b>";
+				card.appendChild(w);
+				card.style.borderColor=hits.length?cv("--sig"):cv("--ok");
+				wrap.appendChild(card);
+			});
+			gh.innerHTML="<b>"+grp[0]+"</b> — 어긴 곳 모두 "+totals[grp[2]]+"군데";
+			batchBox.appendChild(wrap);
+		});
+		batchFb.className="fb show "+(totals[0]>totals[1]?"ok":"no");
+		batchFb.innerHTML=totals[0]>totals[1]
+			? "<b>차이가 보입니다.</b> 기준 없이 요청한 세 개는 말투도 내용도 제각각이고, 확인되지 않은 숫자가 섞여 있습니다. 기준을 함께 준 세 개는 같은 방향으로 모입니다.<br><br>AI가 매번 다르게 만드는 것은 고장이 아닙니다. <b>확률로 고르기 때문에 원래 그렇습니다.</b> 그래서 한 방향으로 모으려면 <b>요청할 때마다 같은 기준을 함께 넘겨야</b> 합니다."
+			: "<b>기준을 더 촘촘히 적어 보세요.</b> 지금 기준으로는 두 무리의 차이가 잘 드러나지 않습니다. 쓰지 않을 단어를 더 넣거나, 확인된 사실을 줄여 보세요.";
+	}
+
+	/* ---------- 3. 내 문구 검사 ---------- */
+	var h3=el("div","bh");h3.style.marginTop="22px";
+	h3.appendChild(el("span","tag c","STEP C"));h3.appendChild(el("h3",null,"내가 만든 문구 검사하기"));
+	root.appendChild(h3);
+	root.appendChild(el("p","lead","AI에게 받은 문구를 붙여넣으면 기준을 지켰는지 글자 단위로 확인합니다."));
+	var ta=document.createElement("textarea");
+	ta.className="txtin";ta.rows=3;ta.style.resize="vertical";
+	ta.placeholder="AI가 만들어 준 문구를 여기에 붙여넣으세요.";
+	ta.value="20년 전통! 창원 최고의 국숫집, 하루 500그릇 판매!";
+	root.appendChild(ta);
+	var brow=el("div","btnrow");
+	var go=el("button","btn","기준 지켰는지 검사하기");
+	brow.appendChild(go);root.appendChild(brow);
+	var res=el("div");res.style.marginTop="14px";root.appendChild(res);
+	function check(){
+		var text=ta.value;
+		res.innerHTML="";
+		if(!text.trim()){res.appendChild(el("div","note","문구를 붙여넣어 주세요."));return;}
+		var hits=inspect(text);
+		var card=el("div","taskcard");
+		var body=el("div","tt");body.innerHTML=mark(text,hits);
+		card.appendChild(body);
+		var w=el("div","why show");
+		if(hits.length){
+			w.innerHTML="<b>기준을 어긴 곳 "+hits.length+"군데</b><br>"+hits.map(function(h){return "· "+h.t;}).join("<br>")+
+				"<br><br>조금 부풀려 말하는 것과 <b>없는 사실을 만드는 것</b>은 다릅니다. 숫자와 연도는 반드시 확인된 사실 안에 있어야 합니다.";
+			card.style.borderColor=cv("--sig");
+		}else{
+			w.innerHTML="<b>기준을 모두 지켰습니다.</b> 쓰지 않기로 한 단어가 없고, 숫자도 확인된 사실 안에 있습니다.";
+			card.style.borderColor=cv("--ok");
+		}
+		card.appendChild(w);res.appendChild(card);
+	}
+	go.addEventListener("click",check);
+	runBatch();check();
+};
+
+/* ================= 12주차 · 판단 근거와 출처 확인 ================= */
+STAGES.xai=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="은행이 대출 심사에 AI를 씁니다. 값을 바꿔 보면서 <b>어떤 항목이 결과를 밀었는지</b> 확인해 보세요.";
+	root.appendChild(lead);
+	var income=40,late=2,years=3;
+	var cbox=el("div");root.appendChild(cbox);
+	ctlRow(cbox,"연 소득",20,90,1,income,function(v){return v+"백만";},function(v){income=v;render();});
+	ctlRow(cbox,"연체 횟수",0,6,1,late,function(v){return v+"회";},function(v){late=v;render();});
+	ctlRow(cbox,"근무 기간",0,15,1,years,function(v){return v+"년";},function(v){years=v;render();});
+	var verdict=el("div","keyline");root.appendChild(verdict);
+	var bars=el("div","bars");bars.style.marginTop="12px";root.appendChild(bars);
+	var expl=el("div","note");root.appendChild(expl);
+	function render(){
+		var c1=(income-40)*0.6, c2=-late*11, c3=years*2.2;
+		var total=50+c1+c2+c3;
+		var ok=total>=50;
+		verdict.innerHTML="<b>AI의 판정</b> "+(ok?"승인":"거절")+" (점수 "+Math.round(total)+"점 / 기준 50점)";
+		verdict.style.background=ok?cv("--ok-soft"):cv("--sig-soft");
+		bars.innerHTML="";
+		[["연 소득",c1],["연체 횟수",c2],["근무 기간",c3]].forEach(function(p){
+			var w=el("div","bar"+(p[1]<0?" hit":""));
+			w.appendChild(el("span","bw",p[0]));
+			var tr=el("div","tr");var f=el("div","fi");
+			f.style.width=Math.min(100,Math.abs(p[1])*2.2)+"%";tr.appendChild(f);
+			w.appendChild(tr);
+			w.appendChild(el("span","pc",(p[1]>0?"+":"")+Math.round(p[1])));
+			bars.appendChild(w);
+		});
+		var big=Math.abs(c2)>=Math.abs(c1)&&Math.abs(c2)>=Math.abs(c3)?"연체 횟수":Math.abs(c1)>=Math.abs(c3)?"연 소득":"근무 기간";
+		expl.innerHTML="지금 결과를 가장 크게 민 항목은 <b>"+big+"</b>입니다. 이렇게 항목별로 얼마나 밀었는지 보여 주는 것이 설명가능한 AI(XAI)의 한 방법입니다. 거절을 받은 사람은 이 설명을 요구할 수 있어야 합니다.";
+	}
+	render();
+
+	var s2=el("div");s2.style.marginTop="22px";root.appendChild(s2);
+	s2.appendChild(el("p","lead","이번에는 생성형 AI의 답변입니다. 아래 세 문장에는 각각 출처가 붙어 있습니다. 하나씩 열어서 맞춰 보세요."));
+	var SENT=[
+		{t:"국내 대학 도서관은 대부분 학기 중 평일에 밤 10시까지 문을 엽니다.",src:"자료를 열어 보니 ‘대학마다 다르다’고만 적혀 있습니다.",r:"다름",why:"출처에는 그런 내용이 없습니다. 그럴듯하게 늘려 쓴 문장입니다."},
+		{t:"창원대학교는 국립대학입니다.",src:"학교 공식 안내에 같은 내용이 있습니다.",r:"맞음",why:"출처와 문장이 일치합니다. 이 문장은 써도 됩니다."},
+		{t:"2025년 기준 전국 대학 도서관 이용률은 78.4%입니다.",src:"링크를 여니 다른 주제의 보도자료입니다. 이 숫자는 없습니다.",r:"없음",why:"출처에 그 숫자가 아예 없습니다. 지어낸 숫자입니다."}
+	];
+	SENT.forEach(function(s){
+		var card=el("div","taskcard");
+		card.appendChild(el("div","tt",s.t));
+		var row=el("div","picks");
+		var b=el("button","pick","출처 열어 보기");
+		var w=el("div","why");
+		b.addEventListener("click",function(){
+			if(card.locked)return;card.locked=true;
+			b.classList.add(s.r==="맞음"?"right":"wrong");
+			b.textContent="확인함 — "+s.r;
+			w.innerHTML="<b>열어 보니</b> "+s.src+"<br><b>판정</b> "+s.why;
+			w.classList.add("show");
+		});
+		row.appendChild(b);card.appendChild(row);card.appendChild(w);
+		s2.appendChild(card);
+	});
+	var tip=el("div","fb show ok");
+	tip.innerHTML="<b>정리</b> AI에게 ‘왜 그렇게 답했어?’라고 물어도, 그 대답 역시 새로 만든 문장입니다. 확인은 <b>출처를 직접 열어 맞춰 보는 것</b>뿐입니다.";
+	s2.appendChild(tip);
+};
+
+/* ================= 13주차 · 무엇을 맡기고 무엇을 남길까 ================= */
+STAGES.offload=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="아래 여섯 가지 일을 어떻게 할지 골라 보세요. 고를 때마다 <b>무엇이 남고 무엇이 줄어드는지</b> 알려 줍니다.";
+	root.appendChild(lead);
+	var WAY=["내가 먼저 하고 AI에게 검토받기","AI가 먼저 하고 내가 고치기","전부 AI에게 맡기기"];
+	var TASKS=[
+		{t:"수업 과제 글쓰기",good:0,fb:["생각을 정리하는 힘이 남습니다. 가장 좋은 방식입니다.","빨리 끝납니다. 대신 내 생각이 아니라 AI의 틀을 따라가기 쉽습니다.","시간은 아낍니다. 그런데 글 쓰는 능력이 거의 늘지 않습니다."]},
+		{t:"영어 자료 100쪽 요약하기",good:1,fb:["시간이 너무 많이 듭니다. 이런 일은 맡겨도 됩니다.","좋습니다. 요약은 맡기고 중요한 부분만 원문으로 확인하면 됩니다.","위험합니다. 요약이 틀려도 알아채지 못합니다."]},
+		{t:"시험 공부 계획 세우기",good:0,fb:["내 상황은 내가 가장 잘 압니다. 직접 세우는 것이 좋습니다.","괜찮습니다. 다만 내 사정에 맞게 반드시 고쳐야 합니다.","내 사정이 빠진 계획이 나옵니다. 지키기 어렵습니다."]},
+		{t:"발표 자료 디자인 만들기",good:1,fb:["오래 걸립니다. 이런 일은 맡겨도 좋습니다.","좋습니다. 모양은 맡기고 내용은 내가 정합니다.","내용까지 맡기면 무엇을 말할지 모르게 됩니다."]},
+		{t:"자료의 숫자가 맞는지 확인하기",good:0,fb:["맞습니다. 확인은 사람이 해야 합니다.","확인을 확인받는 셈입니다. 근거가 되지 않습니다.","가장 위험합니다. 틀린 숫자가 그대로 남습니다."]},
+		{t:"반대 의견 만들어 보기",good:1,fb:["혼자 생각하면 놓치는 부분이 있습니다.","아주 좋습니다. 내가 못 본 관점을 받을 수 있습니다.","반대 의견까지 안 읽고 넘기면 소용이 없습니다."]}
+	];
+	var score=0,answered=0;
+	var mrow=el("div","metrics");
+	var mS=metric("한 번에 고른 문제","0 / 6");
+	mrow.appendChild(mS);root.appendChild(mrow);
+	TASKS.forEach(function(task){
+		var card=el("div","taskcard");
+		card.appendChild(el("div","tt",task.t));
+		var row=el("div","picks");
+		var w=el("div","why");
+		WAY.forEach(function(l,j){
+			var b=el("button","pick",l);
+			b.addEventListener("click",function(){
+				if(card.locked)return;
+				var right=(j===task.good);
+				if(!right&&!card.tried){
+					card.tried=1;b.classList.add("wrong");b.disabled=true;
+					w.innerHTML="<b>다시 한 번</b> 아직 정답이 아닙니다. 오늘 배운 내용을 떠올리며 한 번 더 골라 보세요.";w.classList.add("show");
+					return;
+				}
+				card.locked=true;answered++;
+				b.classList.add(right?"right":"wrong");
+				if(!right)row.querySelectorAll(".pick")[task.good].classList.add("right");
+				if(right&&!card.tried)score++;
+				w.innerHTML=task.fb[j];w.classList.add("show");
+				mS.val.textContent=score+" / 6";
+				mS.className="metric"+(score>=5?" win":"");
+			});
+			row.appendChild(b);
+		});
+		card.appendChild(row);card.appendChild(w);root.appendChild(card);
+	});
+	var note=el("div","keyline");
+	note.innerHTML="<b>기준</b> 결과가 틀렸을 때 <b>내가 알아챌 수 있는 일</b>만 맡기세요. 알아챌 수 없는 일을 맡기면, 틀린 줄도 모르고 씁니다.";
+	root.appendChild(note);
+
+	var mk=el("div");mk.style.marginTop="20px";root.appendChild(mk);
+	mk.appendChild(el("p","lead","이제 나만의 규칙 3줄을 만들어 보세요. 한 줄씩 골라 담으면 카드가 만들어집니다."));
+	var OPT=[
+		["초안은 내가 쓴다","초안은 AI에게 받고 내가 고친다"],
+		["반대 의견은 AI에게 받는다","반대 의견도 내가 찾는다"],
+		["출처는 반드시 직접 확인한다","출처는 급할 때만 확인한다"]
+	];
+	var chosen=[null,null,null];
+	OPT.forEach(function(pair,i){
+		var row=el("div","picks");row.style.marginBottom="9px";
+		pair.forEach(function(t,j){
+			var b=el("button","pick",t);
+			b.addEventListener("click",function(){
+				chosen[i]=t;
+				var bs=row.querySelectorAll(".pick");
+				for(var k=0;k<bs.length;k++)bs[k].classList.remove("sel");
+				b.classList.add("sel");draw();
+			});
+			row.appendChild(b);
+		});
+		mk.appendChild(row);
+	});
+	var card=el("div","fb show ok");mk.appendChild(card);
+	function draw(){
+		if(chosen.indexOf(null)>=0){card.className="fb show no";card.innerHTML="<b>세 줄을 모두 골라 주세요</b>";return;}
+		var risky=(chosen[0].indexOf("AI에게 받고")>=0)&&(chosen[2].indexOf("급할 때만")>=0);
+		card.className="fb show "+(risky?"no":"ok");
+		card.innerHTML="<b>나의 AI 사용 규칙</b><br>1. "+chosen[0]+"<br>2. "+chosen[1]+"<br>3. "+chosen[2]+
+			"<br><br>"+(risky?"초안도 맡기고 출처도 잘 안 본다면, 결과가 틀려도 알아채기 어렵습니다. 한 줄은 바꾸는 편이 좋습니다.":"판단은 남기고 반복만 맡기는 규칙입니다. 이 세 줄을 노트에 적어 두고 한 학기 동안 지켜 보세요.");
+	}
+	draw();
+};
+
+/* ================= 14주차 · 직무 다시 나누기와 책임 ================= */
+STAGES.jobsplit=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="직업 하나를 고르면 그 안의 일이 여섯 가지로 나옵니다. 각각이 <b>자동화되기 쉬운지</b> 골라 보세요.";
+	root.appendChild(lead);
+	var JOBS={
+		"마케터":[
+			{t:"광고 문구 30개 만들기",a:0,why:"많이 만드는 일입니다. 자동화가 쉽습니다."},
+			{t:"이번 달 광고 성과 표 정리하기",a:0,why:"정해진 계산입니다. 자동화가 쉽습니다."},
+			{t:"어떤 고객을 목표로 할지 정하기",a:1,why:"회사의 방향을 정하는 판단입니다. 사람이 합니다."},
+			{t:"경쟁사 소식 모으기",a:0,why:"찾아서 모으는 일입니다. 자동화가 쉽습니다."},
+			{t:"광고가 불쾌하게 느껴지지 않는지 판단하기",a:1,why:"사람의 감정과 사회 분위기를 읽는 일입니다."},
+			{t:"예산을 어디에 더 쓸지 결정하기",a:1,why:"돈을 쓰는 결정입니다. 책임이 따릅니다."}
+		],
+		"재무 분석":[
+			{t:"월별 매출 자료 정리하기",a:0,why:"정해진 절차입니다. 자동화가 쉽습니다."},
+			{t:"재무제표에서 이상한 항목 찾기",a:0,why:"규칙으로 찾을 수 있습니다. 자동화가 쉽습니다."},
+			{t:"투자할지 말지 결정하기",a:1,why:"결과에 책임이 따르는 결정입니다."},
+			{t:"보고서 초안 만들기",a:0,why:"틀이 정해진 글입니다. 자동화가 쉽습니다."},
+			{t:"숫자가 이상할 때 담당자에게 물어 확인하기",a:1,why:"사람에게 묻고 판단하는 일입니다."},
+			{t:"위험을 어디까지 감수할지 정하기",a:1,why:"회사의 기준을 정하는 판단입니다."}
+		],
+		"영업 관리":[
+			{t:"고객 문의 자동 응답하기",a:0,why:"자주 오는 질문은 자동화가 쉽습니다."},
+			{t:"거래처별 실적 표 만들기",a:0,why:"정해진 계산입니다."},
+			{t:"오래된 거래처와 관계 풀기",a:1,why:"사람 사이의 신뢰 문제입니다."},
+			{t:"제안서 초안 쓰기",a:0,why:"틀이 있는 글입니다."},
+			{t:"가격을 깎아 줄지 정하기",a:1,why:"이익과 관계를 함께 재는 판단입니다."},
+			{t:"방문 일정 짜기",a:0,why:"조건을 넣으면 계산할 수 있습니다."}
+		]
+	};
+	var cur="마케터";
+	var ch=el("div","chips");root.appendChild(ch);
+	Object.keys(JOBS).forEach(function(k){
+		var b=el("button","chip",k);b.setAttribute("aria-pressed",k===cur?"true":"false");
+		b.addEventListener("click",function(){
+			cur=k;
+			var cs=ch.querySelectorAll(".chip");
+			for(var i=0;i<cs.length;i++)cs[i].setAttribute("aria-pressed","false");
+			b.setAttribute("aria-pressed","true");draw();
+		});
+		ch.appendChild(b);
+	});
+	var box=el("div");box.style.marginTop="12px";root.appendChild(box);
+	var sum=el("div","fb");root.appendChild(sum);
+	function draw(){
+		box.innerHTML="";sum.className="fb";
+		var done=0,right=0;
+		JOBS[cur].forEach(function(task){
+			var card=el("div","taskcard");
+			card.appendChild(el("div","tt",task.t));
+			var row=el("div","picks");
+			var w=el("div","why");
+			["자동화되기 쉽다","사람이 해야 한다"].forEach(function(l,j){
+				var b=el("button","pick",l);
+				b.addEventListener("click",function(){
+					if(card.locked)return;
+					var ok=(j===task.a);
+					if(!ok&&!card.tried){
+						card.tried=1;b.classList.add("wrong");b.disabled=true;
+						w.innerHTML="<b>다시 한 번</b> 아직 정답이 아닙니다. 오늘 배운 내용을 떠올리며 한 번 더 골라 보세요.";w.classList.add("show");
+						return;
+					}
+					card.locked=true;done++;
+					if(ok&&!card.tried)right++;
+					b.classList.add(ok?"right":"wrong");
+					if(!ok)row.querySelectorAll(".pick")[task.a].classList.add("right");
+					w.innerHTML=task.why;w.classList.add("show");
+					if(done===6){
+						sum.className="fb show ok";
+						sum.innerHTML="<b>"+right+" / 6</b> 자동화되는 일은 <b>반복이 많고 규칙이 분명한 것</b>입니다. 남는 일은 <b>정하고 책임지는 것</b>입니다. 직업이 사라지는 것이 아니라 일이 다시 나뉘는 것입니다.";
+					}
+				});
+				row.appendChild(b);
+			});
+			card.appendChild(row);card.appendChild(w);box.appendChild(card);
+		});
+	}
+	draw();
+
+	var r=el("div");r.style.marginTop="22px";root.appendChild(r);
+	r.appendChild(el("p","lead","배송 로봇이 보도에서 사람과 부딪혔습니다. 책임을 따지려면 무엇을 알아야 할까요? 필요한 것을 모두 고르세요."));
+	var ITEMS=[
+		{t:"사람이 언제 개입하도록 정해 두었는가",need:true},
+		{t:"사고 당시 로봇이 어떤 상태였는지 기록이 남았는가",need:true},
+		{t:"로봇의 색과 디자인",need:false},
+		{t:"운영 회사가 안전 점검을 했는가",need:true},
+		{t:"로봇 가격",need:false},
+		{t:"만든 회사가 어떤 조건에서 쓰라고 했는가",need:true}
+	];
+	var picked={};
+	var lst=el("div");r.appendChild(lst);
+	ITEMS.forEach(function(it,i){
+		var row=el("div","stepitem");row.style.cursor="pointer";
+		row.appendChild(el("span","ix","□"));
+		row.appendChild(el("span","lbl",it.t));
+		row.appendChild(el("span","note",""));
+		row.addEventListener("click",function(){
+			picked[i]=!picked[i];
+			row.children[0].textContent=picked[i]?"■":"□";
+			row.classList.toggle("good",!!picked[i]);
+		});
+		lst.appendChild(row);
+	});
+	var rres=el("div","fb");r.appendChild(rres);
+	var rb=el("div","btnrow");var rbtn=el("button","btn","채점하기");rb.appendChild(rbtn);r.appendChild(rb);
+	rbtn.addEventListener("click",function(){
+		var ok=0,wrong=0;
+		ITEMS.forEach(function(it,i){
+			var row=lst.children[i];
+			row.classList.remove("good","bad");
+			if(it.need&&picked[i]){ok++;row.classList.add("good");}
+			else if(it.need&&!picked[i]){row.classList.add("bad");row.children[2].textContent="빠뜨림";}
+			else if(!it.need&&picked[i]){wrong++;row.classList.add("bad");row.children[2].textContent="필요 없음";}
+		});
+		rres.className="fb show "+(ok===4&&wrong===0?"ok":"no");
+		rres.innerHTML="<b>필요한 것 "+ok+" / 4</b> 책임은 기계에게 묻지 않습니다. <b>사람이 미리 정해 둔 절차</b>를 보고 따집니다. 누가 언제 개입하기로 했는지 먼저 봅니다. 그다음 기록이 남았는지 봅니다.";
+	});
+};
+
+/* ================= 15주차 · 기말 정리 ================= */
+STAGES.finalreview=function(root){
+	var lead=el("p","lead");
+	lead.innerHTML="9주차부터 14주차까지 핵심을 모았습니다. 틀린 문제는 그 주차로 돌아가 실습을 다시 해 보세요.";
+	root.appendChild(lead);
+	var QS=[
+		{w:9,q:"AI가 우리 이야기를 지어내지 않게 하려면?",o:["확인된 사실 목록을 함께 넘긴다","더 길게 요청한다","여러 번 물어본다","짧게 요청한다"],a:0},
+		{w:9,q:"명세 네 칸에 들어가지 않는 것은?",o:["산출물","형식","독자","글꼴"],a:3},
+		{w:10,q:"여러 도구를 이어 쓸 때 꼭 넣어야 할 단계는?",o:["사실 확인","색 맞추기","파일 정리","글꼴 통일"],a:0},
+		{w:10,q:"오케스트레이션의 핵심은?",o:["도구를 많이 쓰기","순서와 확인 지점을 정하기","한 도구만 쓰기","빠르게 끝내기"],a:1},
+		{w:11,q:"결과를 한 방향으로 모으는 방법은?",o:["요청할 때마다 같은 기준을 함께 넘긴다","도구를 하나로 줄인다","한 번만 요청한다","길게 요청한다"],a:0},
+		{w:11,q:"AI가 같은 요청에 매번 다른 결과를 내는 이유는?",o:["확률로 단어를 고르기 때문","기계가 고장 나서","질문이 짧아서","도구가 달라서"],a:0},
+		{w:12,q:"AI가 스스로 말한 이유를 믿을 수 없는 까닭은?",o:["그 설명도 새로 만든 문장이라서","말이 짧아서","기록이 지워져서","사람이 못 읽어서"],a:0},
+		{w:12,q:"출처를 확인하는 올바른 방법은?",o:["링크를 열어 직접 맞춰 본다","개수를 센다","형식을 본다","AI에게 다시 묻는다"],a:0},
+		{w:13,q:"AI에게 맡겨도 되는 일의 조건은?",o:["틀렸을 때 내가 알아챌 수 있는 일","시간이 오래 걸리는 일","어려운 일","싫은 일"],a:0},
+		{w:14,q:"AI가 일자리에 주는 영향은?",o:["과업 단위로 다시 나뉜다","직업이 통째로 사라진다","아무 변화 없다","임금만 오른다"],a:0}
+	];
+	var score=0,answered=0;
+	var mrow=el("div","metrics");var mS=metric("한 번에 맞힌 문제","0 / 10");mrow.appendChild(mS);root.appendChild(mrow);
+	var res=el("div","fb");root.appendChild(res);
+	QS.forEach(function(item,i){
+		var card=el("div","taskcard");
+		card.appendChild(el("div","tt",(i+1)+". "+item.q+"  ("+item.w+"주차)"));
+		var row=el("div","picks");
+		item.o.forEach(function(o,j){
+			var b=el("button","pick",o);
+			b.addEventListener("click",function(){
+				if(card.locked)return;
+				var right=(j===item.a);
+				if(!right&&!card.tried){
+					card.tried=1;b.classList.add("wrong");b.disabled=true;
+					if(!card.hint){card.hint=el("div","why show");card.appendChild(card.hint);}
+					card.hint.innerHTML="<b>다시 한 번</b> 아직 정답이 아닙니다. 오늘 배운 내용을 떠올리며 한 번 더 골라 보세요.";
+					return;
+				}
+				card.locked=true;answered++;
+				if(card.hint)card.hint.remove();
+				if(right){b.classList.add("right");if(!card.tried)score++;}
+				else{
+					b.classList.add("wrong");row.querySelectorAll(".pick")[item.a].classList.add("right");
+					var link=el("button","btn tint",item.w+"주차 다시 보기");
+					link.style.marginTop="9px";
+					link.addEventListener("click",function(){openWeek(item.w);});
+					card.appendChild(link);
+				}
+				mS.val.textContent=score+" / 10";
+				mS.className="metric"+(score>=8?" win":"");
+				if(answered===QS.length){
+					res.className="fb show "+(score>=8?"ok":"no");
+					res.innerHTML="<b>"+score+" / 10</b> "+(score>=8?"기말 준비가 잘 되어 있습니다. 틀린 주차만 한 번 더 보세요.":"틀린 주차로 돌아가 실습을 다시 해 보세요. 시험은 사용법이 아니라 개념과 판단을 묻습니다.");
+				}
+			});
+			row.appendChild(b);
+		});
+		card.appendChild(row);root.appendChild(card);
+	});
+};
+
+route();
+})();
+</script>
